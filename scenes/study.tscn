@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://bes2f2dlre0pj"]
+
+[ext_resource type="Script" uid="uid://ciw76hlt2ogtq" path="res://scripts/study.gd" id="1_e7rny"]
+[ext_resource type="PackedScene" uid="uid://cvxd2f8dbnvbs" path="res://addons/godot_japanese_text/japanese_text.tscn" id="2_8q8l4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8trg"]
+bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.817521, 0.817521, 0.817521, 1)
+
+[node name="Study" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_e7rny")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 0
+offset_left = 80.0
+offset_top = 112.0
+offset_right = 976.0
+offset_bottom = 512.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_x8trg")
+
+[node name="JapaneseText" parent="Panel" instance=ExtResource("2_8q8l4")]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true

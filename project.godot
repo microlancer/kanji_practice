@@ -11,7 +11,9 @@ config_version=5
 [application]
 
 config/name="Kanji Practice"
+run/main_scene="uid://dofao4rntufk3"
 config/features=PackedStringArray("4.4", "GL Compatibility")
+run/max_fps=5
 config/icon="res://assets/icons/icon.svg"
 
 [display]
@@ -31,3 +33,4 @@ theme/custom_font="uid://bhh4g2kghn2x1"
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

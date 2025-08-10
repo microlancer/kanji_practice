@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsfoc2rtvuehg"]
+
+[ext_resource type="Script" uid="uid://ccadjbvbss4r2" path="res://scripts/kanji.gd" id="1_gnhbr"]
+
+[node name="Kanji" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_gnhbr")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+offset_left = 24.0
+offset_top = 288.0
+offset_right = 1064.0
+offset_bottom = 744.0
+vertical_scroll_mode = 2
+
+[node name="ItemList" type="ItemList" parent="ScrollContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+
+[node name="FilterEdit" type="TextEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 5.6
+anchor_top = 5.0
+anchor_right = 26.0
+anchor_bottom = 7.0
+offset_right = 8.0
+offset_bottom = 8.0
+metadata/_edit_use_anchors_ = true
+
+[node name="FilterLabel" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 192.0
+offset_right = 209.0
+offset_bottom = 286.0
+text = "Filter:"
+
+[node name="Save" type="Button" parent="."]
+offset_left = 528.0
+offset_top = 1480.0
+offset_right = 1042.0
+offset_bottom = 1582.0
+text = "Redraw"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 752.0
+offset_right = 1054.0
+offset_bottom = 846.0
+text = "Mastery: Lv 1 / Next review: 12m"

@@ -1,4 +1,11 @@
-[gd_scene format=3 uid="uid://dofao4rntufk3"]
+[gd_scene load_steps=7 format=3 uid="uid://dofao4rntufk3"]
+
+[ext_resource type="Script" uid="uid://b78er31qaq8bi" path="res://scripts/kanji_practice_game.gd" id="1_8cksl"]
+[ext_resource type="PackedScene" uid="uid://bes2f2dlre0pj" path="res://scenes/study.tscn" id="2_6ygm7"]
+[ext_resource type="PackedScene" uid="uid://dct2yvx68hix0" path="res://scenes/phrases.tscn" id="4_tlvjx"]
+[ext_resource type="PackedScene" uid="uid://bsfoc2rtvuehg" path="res://scenes/kanji.tscn" id="5_tlvjx"]
+[ext_resource type="PackedScene" uid="uid://dv3fvk7yqpxvj" path="res://scenes/lists.tscn" id="5_vqt6i"]
+[ext_resource type="PackedScene" uid="uid://ci1fx6rq8xnk1" path="res://scenes/stats.tscn" id="6_vqt6i"]
 
 [node name="KanjiPracticeGame" type="Control"]
 custom_minimum_size = Vector2(1080, 1920)
@@ -8,3 +15,34 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_8cksl")
+
+[node name="TabBar" type="TabBar" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 102.0
+grow_horizontal = 2
+current_tab = 0
+tab_count = 5
+tab_0/title = "Study"
+tab_1/title = "Phrases"
+tab_2/title = "Lists"
+tab_3/title = "Kanji"
+tab_4/title = "Stats"
+
+[node name="Study" parent="TabBar" instance=ExtResource("2_6ygm7")]
+
+[node name="Phrases" parent="TabBar" instance=ExtResource("4_tlvjx")]
+visible = false
+
+[node name="Lists" parent="TabBar" instance=ExtResource("5_vqt6i")]
+visible = false
+
+[node name="Kanji" parent="TabBar" instance=ExtResource("5_tlvjx")]
+visible = false
+
+[node name="Stats" parent="TabBar" instance=ExtResource("6_vqt6i")]
+visible = false
+
+[connection signal="tab_changed" from="TabBar" to="." method="_on_tab_bar_tab_changed"]

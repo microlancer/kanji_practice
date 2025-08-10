@@ -1,0 +1,82 @@
+[gd_scene load_steps=2 format=3 uid="uid://dct2yvx68hix0"]
+
+[ext_resource type="Script" uid="uid://cr38gxaer51vo" path="res://scripts/phrases.gd" id="1_5ao7r"]
+
+[node name="Phrases" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_5ao7r")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 312.0
+offset_right = 1064.0
+offset_bottom = 840.0
+vertical_scroll_mode = 2
+
+[node name="ItemList" type="ItemList" parent="ScrollContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+
+[node name="TextEdit" type="TextEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 5.6
+anchor_top = 5.0
+anchor_right = 26.0
+anchor_bottom = 7.0
+offset_right = 8.0
+offset_bottom = 8.0
+metadata/_edit_use_anchors_ = true
+
+[node name="TextEdit2" type="TextEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 22.6
+anchor_right = 26.0
+anchor_bottom = 33.4
+offset_left = 8.0
+offset_top = 120.0
+offset_right = 16.0
+offset_bottom = 128.0
+placeholder_text = "Enter a phrase here"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 192.0
+offset_right = 209.0
+offset_bottom = 286.0
+text = "Filter:"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 528.0
+offset_top = 1480.0
+offset_right = 1042.0
+offset_bottom = 1582.0
+text = "Save phrase"
+
+[node name="Button2" type="Button" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 1480.0
+offset_right = 402.0
+offset_bottom = 1582.0
+text = "Delete"
+
+[node name="Button3" type="Button" parent="."]
+layout_mode = 0
+offset_left = 672.0
+offset_top = 864.0
+offset_right = 1050.0
+offset_bottom = 966.0
+text = "Add new"
