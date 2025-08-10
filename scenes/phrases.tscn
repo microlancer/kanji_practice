@@ -4,11 +4,11 @@
 [ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="2_qq4x6"]
 
 [node name="Phrases" type="Control"]
+physics_interpolation_mode = 0
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 script = ExtResource("1_5ao7r")
+metadata/_custom_type_script = "uid://bitcditq5adw4"
 
 [node name="FilterableList" parent="." instance=ExtResource("2_qq4x6")]
 
@@ -19,11 +19,12 @@ anchor_left = 0.4
 anchor_top = 22.6
 anchor_right = 26.0
 anchor_bottom = 33.4
-offset_left = 8.0
-offset_top = 120.0
-offset_right = 16.0
-offset_bottom = 128.0
+offset_left = 24.0
+offset_top = 888.0
+offset_right = 1040.0
+offset_bottom = 1440.0
 theme_override_constants/caret_width = 3
+text = "asdasdasd"
 placeholder_text = "Enter a phrase here"
 wrap_mode = 1
 caret_blink = true

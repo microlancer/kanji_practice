@@ -4,11 +4,11 @@
 [ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="2_dhxyd"]
 
 [node name="Lists" type="Control"]
+physics_interpolation_mode = 0
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 script = ExtResource("1_2u4w2")
+metadata/_custom_type_script = "uid://bitcditq5adw4"
 
 [node name="FilterableList" parent="." instance=ExtResource("2_dhxyd")]
 
@@ -17,11 +17,13 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 6.2
 anchor_top = 23.4
-anchor_right = 26.6
-anchor_bottom = 25.4
-offset_right = 8.0
-offset_bottom = 8.0
-metadata/_edit_use_anchors_ = true
+anchor_right = 6.2
+anchor_bottom = 23.4
+offset_left = 256.0
+offset_top = 920.0
+offset_right = 976.0
+offset_bottom = 1016.0
+theme_override_constants/caret_width = 3
 
 [node name="NameLabel" type="Label" parent="."]
 layout_mode = 0
@@ -38,13 +40,14 @@ anchor_left = 0.4
 anchor_top = 22.6
 anchor_right = 26.0
 anchor_bottom = 33.4
-offset_left = 8.0
-offset_top = 120.0
-offset_right = 16.0
-offset_bottom = 128.0
+offset_left = 32.0
+offset_top = 1032.0
+offset_right = 1024.0
+offset_bottom = 1440.0
+theme_override_constants/caret_width = 3
 placeholder_text = "Enter words, separated by comma"
 wrap_mode = 1
-metadata/_edit_use_anchors_ = true
+caret_blink = true
 
 [node name="Save" type="Button" parent="."]
 layout_mode = 0
@@ -77,3 +80,9 @@ offset_top = 792.0
 offset_right = 1066.0
 offset_bottom = 894.0
 text = "New list"
+
+[connection signal="text_changed" from="NameEdit" to="." method="_on_words_text_changed"]
+[connection signal="text_changed" from="ListOfWords" to="." method="_on_words_text_changed"]
+[connection signal="pressed" from="Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Words" to="." method="_on_words_pressed"]
+[connection signal="pressed" from="New" to="." method="_on_new_pressed"]
