@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dct2yvx68hix0"]
+[gd_scene load_steps=3 format=3 uid="uid://dct2yvx68hix0"]
 
 [ext_resource type="Script" uid="uid://cr38gxaer51vo" path="res://scripts/phrases.gd" id="1_5ao7r"]
+[ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="2_qq4x6"]
 
 [node name="Phrases" type="Control"]
 layout_mode = 3
@@ -9,7 +10,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_5ao7r")
 
+[node name="FilterableList" parent="." instance=ExtResource("2_qq4x6")]
+
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 24.0
 offset_top = 312.0
@@ -18,6 +22,7 @@ offset_bottom = 840.0
 vertical_scroll_mode = 2
 
 [node name="ItemList" type="ItemList" parent="ScrollContainer"]
+visible = false
 custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -25,6 +30,7 @@ size_flags_vertical = 3
 metadata/_edit_lock_ = true
 
 [node name="TextEdit" type="TextEdit" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 5.6
@@ -35,7 +41,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 metadata/_edit_use_anchors_ = true
 
-[node name="TextEdit2" type="TextEdit" parent="."]
+[node name="Phrase" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.4
@@ -47,9 +53,9 @@ offset_top = 120.0
 offset_right = 16.0
 offset_bottom = 128.0
 placeholder_text = "Enter a phrase here"
-metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 32.0
 offset_top = 192.0
@@ -57,7 +63,7 @@ offset_right = 209.0
 offset_bottom = 286.0
 text = "Filter:"
 
-[node name="Button" type="Button" parent="."]
+[node name="Save" type="Button" parent="."]
 layout_mode = 0
 offset_left = 528.0
 offset_top = 1480.0
@@ -65,15 +71,23 @@ offset_right = 1042.0
 offset_bottom = 1582.0
 text = "Save phrase"
 
-[node name="Button2" type="Button" parent="."]
+[node name="Lists" type="Button" parent="."]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 1480.0
+offset_right = 504.0
+offset_bottom = 1582.0
+text = "Lists"
+
+[node name="Delete" type="Button" parent="."]
 layout_mode = 0
 offset_left = 24.0
 offset_top = 1480.0
-offset_right = 402.0
+offset_right = 224.0
 offset_bottom = 1582.0
 text = "Delete"
 
-[node name="Button3" type="Button" parent="."]
+[node name="New" type="Button" parent="."]
 layout_mode = 0
 offset_left = 672.0
 offset_top = 864.0

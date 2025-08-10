@@ -13,8 +13,12 @@ config_version=5
 config/name="Kanji Practice"
 run/main_scene="uid://dofao4rntufk3"
 config/features=PackedStringArray("4.4", "GL Compatibility")
-run/max_fps=5
+run/max_fps=20
 config/icon="res://assets/icons/icon.svg"
+
+[autoload]
+
+PracticeDB="*res://global/practice_db.gd"
 
 [display]
 

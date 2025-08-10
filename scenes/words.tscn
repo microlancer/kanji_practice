@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=3 uid="uid://ci1fx6rq8xnk1"]
+
+[ext_resource type="Script" uid="uid://cdp7g5aj5liwn" path="res://scripts/words.gd" id="1_2deim"]
+[ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="2_mqi00"]
+
+[node name="Words" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_2deim")
+
+[node name="FilterableList" parent="." instance=ExtResource("2_mqi00")]
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 928.0
+offset_right = 225.0
+offset_bottom = 1022.0
+text = "Word:"
+
+[node name="NameLabel2" type="Label" parent="."]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 1048.0
+offset_right = 321.0
+offset_bottom = 1142.0
+text = "Furigana:"
+
+[node name="NameLabel3" type="Label" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 1176.0
+offset_right = 313.0
+offset_bottom = 1270.0
+text = "Mastery: Lv 1
+Next review in 32m"
+
+[node name="Save" type="Button" parent="."]
+layout_mode = 0
+offset_left = 528.0
+offset_top = 1480.0
+offset_right = 1042.0
+offset_bottom = 1582.0
+text = "Save word"
+
+[node name="Delete" type="Button" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 1480.0
+offset_right = 240.0
+offset_bottom = 1582.0
+text = "Delete"
+
+[node name="Kanji" type="Button" parent="."]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 1480.0
+offset_right = 496.0
+offset_bottom = 1582.0
+text = "Kanji"
+
+[node name="New" type="Button" parent="."]
+layout_mode = 0
+offset_left = 688.0
+offset_top = 792.0
+offset_right = 1066.0
+offset_bottom = 894.0
+text = "Add new"
+
+[node name="NameEdit2" type="TextEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 8.8
+anchor_top = 26.4
+anchor_right = 26.4
+anchor_bottom = 28.4
+offset_right = 8.0
+offset_bottom = 8.0
+metadata/_edit_use_anchors_ = true

@@ -9,7 +9,11 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.817521, 0.817521, 0.817521, 1)
+border_color = Color(0.219502, 0.219501, 0.219501, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
 
 [node name="Study" type="Control"]
 layout_mode = 3
@@ -20,15 +24,19 @@ script = ExtResource("1_e7rny")
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(200, 200)
-layout_mode = 0
-offset_left = 80.0
-offset_top = 112.0
-offset_right = 976.0
-offset_bottom = 512.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 13.5
+anchor_top = 9.9
+anchor_right = 13.5
+anchor_bottom = 9.9
+offset_left = -460.0
+offset_top = -284.0
+offset_right = 460.0
+offset_bottom = 284.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_x8trg")
 
 [node name="JapaneseText" parent="Panel" instance=ExtResource("2_8q8l4")]
-custom_minimum_size = Vector2(200, 200)
 layout_mode = 1
-metadata/_edit_use_anchors_ = true
-metadata/_edit_lock_ = true
+
+[editable path="Panel/JapaneseText"]

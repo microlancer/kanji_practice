@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dv3fvk7yqpxvj"]
+[gd_scene load_steps=3 format=3 uid="uid://dv3fvk7yqpxvj"]
 
 [ext_resource type="Script" uid="uid://onl322saajc7" path="res://scripts/lists.gd" id="1_2u4w2"]
+[ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="2_dhxyd"]
 
 [node name="Lists" type="Control"]
 layout_mode = 3
@@ -9,40 +10,27 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_2u4w2")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 288.0
-offset_right = 1064.0
-offset_bottom = 744.0
-vertical_scroll_mode = 2
+[node name="FilterableList" parent="." instance=ExtResource("2_dhxyd")]
 
-[node name="ItemList" type="ItemList" parent="ScrollContainer"]
-custom_minimum_size = Vector2(200, 200)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-metadata/_edit_lock_ = true
-
-[node name="FilterEdit" type="TextEdit" parent="."]
+[node name="NameEdit" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 5.6
-anchor_top = 5.0
-anchor_right = 26.0
-anchor_bottom = 7.0
+anchor_left = 6.2
+anchor_top = 23.4
+anchor_right = 26.6
+anchor_bottom = 25.4
 offset_right = 8.0
 offset_bottom = 8.0
 metadata/_edit_use_anchors_ = true
 
-[node name="FilterLabel" type="Label" parent="."]
+[node name="NameLabel" type="Label" parent="."]
 offset_left = 32.0
-offset_top = 192.0
-offset_right = 209.0
-offset_bottom = 286.0
-text = "Filter:"
+offset_top = 928.0
+offset_right = 225.0
+offset_bottom = 1022.0
+text = "Name:"
 
-[node name="ListWords" type="TextEdit" parent="."]
+[node name="ListOfWords" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.4
@@ -67,9 +55,16 @@ text = "Save phrase"
 [node name="Delete" type="Button" parent="."]
 offset_left = 24.0
 offset_top = 1480.0
-offset_right = 402.0
+offset_right = 256.0
 offset_bottom = 1582.0
 text = "Delete"
+
+[node name="Words" type="Button" parent="."]
+offset_left = 280.0
+offset_top = 1480.0
+offset_right = 512.0
+offset_bottom = 1582.0
+text = "Words"
 
 [node name="New" type="Button" parent="."]
 offset_left = 688.0
