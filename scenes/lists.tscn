@@ -24,6 +24,7 @@ offset_bottom = 8.0
 metadata/_edit_use_anchors_ = true
 
 [node name="NameLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 32.0
 offset_top = 928.0
 offset_right = 225.0
@@ -46,6 +47,7 @@ wrap_mode = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Save" type="Button" parent="."]
+layout_mode = 0
 offset_left = 528.0
 offset_top = 1480.0
 offset_right = 1042.0
@@ -53,6 +55,7 @@ offset_bottom = 1582.0
 text = "Save phrase"
 
 [node name="Delete" type="Button" parent="."]
+layout_mode = 0
 offset_left = 24.0
 offset_top = 1480.0
 offset_right = 256.0
@@ -60,6 +63,7 @@ offset_bottom = 1582.0
 text = "Delete"
 
 [node name="Words" type="Button" parent="."]
+layout_mode = 0
 offset_left = 280.0
 offset_top = 1480.0
 offset_right = 512.0
@@ -67,8 +71,9 @@ offset_bottom = 1582.0
 text = "Words"
 
 [node name="New" type="Button" parent="."]
+layout_mode = 0
 offset_left = 688.0
 offset_top = 792.0
 offset_right = 1066.0
 offset_bottom = 894.0
-text = "Add new"
+text = "New list"

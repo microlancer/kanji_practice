@@ -12,35 +12,6 @@ script = ExtResource("1_5ao7r")
 
 [node name="FilterableList" parent="." instance=ExtResource("2_qq4x6")]
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 24.0
-offset_top = 312.0
-offset_right = 1064.0
-offset_bottom = 840.0
-vertical_scroll_mode = 2
-
-[node name="ItemList" type="ItemList" parent="ScrollContainer"]
-visible = false
-custom_minimum_size = Vector2(200, 200)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-metadata/_edit_lock_ = true
-
-[node name="TextEdit" type="TextEdit" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 5.6
-anchor_top = 5.0
-anchor_right = 26.0
-anchor_bottom = 7.0
-offset_right = 8.0
-offset_bottom = 8.0
-metadata/_edit_use_anchors_ = true
-
 [node name="Phrase" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -52,16 +23,12 @@ offset_left = 8.0
 offset_top = 120.0
 offset_right = 16.0
 offset_bottom = 128.0
+theme_override_constants/caret_width = 3
 placeholder_text = "Enter a phrase here"
-
-[node name="Label" type="Label" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 32.0
-offset_top = 192.0
-offset_right = 209.0
-offset_bottom = 286.0
-text = "Filter:"
+wrap_mode = 1
+caret_blink = true
+caret_move_on_right_click = false
+caret_multiple = false
 
 [node name="Save" type="Button" parent="."]
 layout_mode = 0
@@ -69,7 +36,7 @@ offset_left = 528.0
 offset_top = 1480.0
 offset_right = 1042.0
 offset_bottom = 1582.0
-text = "Save phrase"
+text = "Save"
 
 [node name="Lists" type="Button" parent="."]
 layout_mode = 0
@@ -90,7 +57,12 @@ text = "Delete"
 [node name="New" type="Button" parent="."]
 layout_mode = 0
 offset_left = 672.0
-offset_top = 864.0
+offset_top = 752.0
 offset_right = 1050.0
-offset_bottom = 966.0
-text = "Add new"
+offset_bottom = 854.0
+text = "New phrase"
+
+[connection signal="text_changed" from="Phrase" to="." method="_on_phrase_text_changed"]
+[connection signal="pressed" from="Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Lists" to="." method="_on_lists_pressed"]
+[connection signal="pressed" from="New" to="." method="_on_new_pressed"]

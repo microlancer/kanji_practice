@@ -5,6 +5,11 @@ var lists: Dictionary = {}
 var words: Dictionary = {}
 var kanji: Dictionary = {}
 
+var filter_phrases: String = ""
+var filter_lists: String = ""
+var filter_words: String = ""
+var filter_kanji: String = ""
+
 func _ready() -> void:
 	phrases = [
 		"<place>の<subarea>で<verbing>"

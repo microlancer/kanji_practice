@@ -39,4 +39,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_x8trg")
 [node name="JapaneseText" parent="Panel" instance=ExtResource("2_8q8l4")]
 layout_mode = 1
 
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 864.0
+offset_top = 672.0
+offset_right = 990.0
+offset_bottom = 774.0
+text = "Edit"
+
 [editable path="Panel/JapaneseText"]
