@@ -27,6 +27,9 @@ func _on_tab_bar_tab_changed(tab: int) -> void:
 			i.visible = false
 		else:
 			i.visible = true
+			if i.has_method("init_filter"):
+				print("init_filter")
+				i.init_filter()
 
 func _on_jump_to_fills() -> void:
 	$TabBar.current_tab = FILLS_TAB_INDEX

@@ -121,16 +121,7 @@ func _on_phrase_text_changed() -> void:
 	$Save.disabled = false
 
 func _get_lists_in_phrase(phrase: String) -> Array:
-
-	var regex := RegEx.new()
-	regex.compile("<(.*?)>")
-
-	var matches := []
-	for result in regex.search_all(phrase):
-		# result.get_string(1) is the first capture group (.*?) from the pattern
-		matches.append(result.get_string(1))
-
-	return matches
+	return PracticeDB.extract_fills(phrase)
 
 func _create_fills_if_missing(list_names: Array) -> void:
 	print("Creating if missing")

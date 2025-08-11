@@ -8,3 +8,6 @@ var real_index: int = 0
 
 func get_text() -> String:
 	return text
+
+func is_valid() -> bool:
+	return true

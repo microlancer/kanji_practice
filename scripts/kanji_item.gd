@@ -8,3 +8,6 @@ func get_text() -> String:
 	if draw_data.is_empty():
 		return text + " (no draw data)"
 	return text
+
+func is_valid() -> bool:
+	return not draw_data.is_empty()

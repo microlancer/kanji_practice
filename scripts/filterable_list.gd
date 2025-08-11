@@ -34,6 +34,9 @@ func _on_filter_edit_text_changed() -> void:
 
 func apply_filter() -> void:
 	_item_list.clear()
+	_item_list.remove_theme_color_override("font_hovered_selected_color")
+	_item_list.remove_theme_color_override("font_selected_color")
+	#_item_list.remove_theme_color_override("font_hovered_color")
 
 	#print("Filter: " + filter_edit.text)
 
@@ -44,6 +47,8 @@ func apply_filter() -> void:
 	if filter_edit.text == "":
 		for item in _all_items:
 			_item_list.add_item(item.get_text())
+			if not item.is_valid():
+				_item_list.set_item_custom_fg_color(visible_index, Color.RED)
 			_item_list.set_item_metadata(visible_index, {
 				"visible_index": visible_index,
 				"real_index": real_index
@@ -78,6 +83,8 @@ func apply_filter() -> void:
 				})
 				item.visible_index = visible_index
 				item.real_index = real_index
+				if not item.is_valid():
+					_item_list.set_item_custom_fg_color(visible_index, Color.RED)
 				#if all_items_metadata.size() > 0:
 				#	print("Setting metadata")
 				#	print("Setting metadata at " + str(index) + " to " + all_items_metadata[all_items_index].name)
@@ -120,6 +127,16 @@ func _on_item_list_item_selected(visible_index: int) -> void:
 	var data = _item_list.get_item_metadata(visible_index)
 	var real_index = data.real_index
 	var item = _all_items[real_index]
+
+	if not item.is_valid():
+		_item_list.add_theme_color_override("font_hovered_selected_color", Color.LIGHT_SALMON)
+		_item_list.add_theme_color_override("font_selected_color", Color.LIGHT_SALMON)
+		#_item_list.add_theme_color_override("font_hovered_color", Color.LIGHT_PINK)
+	else:
+		_item_list.remove_theme_color_override("font_hovered_selected_color")
+		_item_list.remove_theme_color_override("font_selected_color")
+		#_item_list.remove_theme_color_override("font_hovered_color")
+
 	item_selected.emit(item)
 
 #func get_visible_items_metadata() -> Array:

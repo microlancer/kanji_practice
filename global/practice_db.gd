@@ -181,3 +181,14 @@ func get_json_string_from_db() -> String:
 		"kanji": kanji
 	}
 	return JSON.stringify(all_data)
+
+func extract_fills(string: String) -> Array:
+	var regex := RegEx.new()
+	regex.compile("<(.*?)>")
+
+	var matches := []
+	for result in regex.search_all(string):
+		# result.get_string(1) is the first capture group (.*?) from the pattern
+		matches.append(result.get_string(1))
+
+	return matches
