@@ -29,9 +29,11 @@ func init_from_db() -> void:
 		all_phrases.append(phrase_item)
 
 	_phrase_list.init_all_items(all_phrases)
+	init_filter()
+
+func init_filter() -> void:
 	_phrase_list.filter_edit.text = PracticeDB.filter_phrases
 	_phrase_list.apply_filter()
-
 
 func _phrase_contains_fills(phrase: String) -> bool:
 	if phrase.contains("<") and phrase.contains(">"):

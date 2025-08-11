@@ -34,6 +34,9 @@ func init_from_db() -> void:
 		all_words.append(word_item)
 
 	_words_list.init_all_items(all_words)
+	init_filter()
+
+func init_filter() -> void:
 	_words_list.filter_edit.text = PracticeDB.filter_words
 	_words_list.apply_filter()
 
@@ -160,18 +163,18 @@ func _on_new_pressed() -> void:
 func _on_kanji_pressed() -> void:
 	print({"_editing_original_word":_editing_original_word})
 	#var word_item: Dictionary = PracticeDB.words[_editing_original_word]
-	var kanji_array: Array = _list_get_kanji(_editing_original_word)
+	var kanji_array: Array = PracticeDB.get_kanji_array(_editing_original_word)
 	_create_kanji_if_missing(kanji_array)
 	PracticeDB.filter_kanji = "|".join(kanji_array)
 	print(kanji_array)
 	jump_to_kanji.emit()
 
-func _list_get_kanji(word: String) -> Array:
-	var kanji_array: Array = []
-	for c in word:
-		if JapaneseText.is_kanji(c):
-			kanji_array.append(c)
-	return kanji_array
+#func _get_kanji_array(word: String) -> Array:
+	#var kanji_array: Array = []
+	#for c in word:
+		#if JapaneseText.is_kanji(c):
+			#kanji_array.append(c)
+	#return kanji_array
 
 func _create_kanji_if_missing(kanji_array: Array) -> void:
 	print("Creating if missing")

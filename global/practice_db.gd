@@ -192,3 +192,10 @@ func extract_fills(string: String) -> Array:
 		matches.append(result.get_string(1))
 
 	return matches
+
+func get_kanji_array(word: String) -> Array:
+	var kanji_array: Array = []
+	for c in word:
+		if JapaneseText.is_kanji(c):
+			kanji_array.append(c)
+	return kanji_array

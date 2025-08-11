@@ -10,6 +10,15 @@ func get_text() -> String:
 	return word + " (" + furigana + ")"
 
 func is_valid() -> bool:
-	if furigana:
-		return true
-	return false
+	var kanji_array: Array = PracticeDB.get_kanji_array(word)
+	for kanji in kanji_array:
+		if kanji not in PracticeDB.kanji:
+			print("Kanji not in DB " + kanji)
+			return false
+		if PracticeDB.kanji[kanji].draw_data.is_empty():
+			print("No draw data for " + kanji)
+			return false
+	if furigana == "":
+		print("No furigana " + word)
+		return  false
+	return true

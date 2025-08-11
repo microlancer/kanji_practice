@@ -12,22 +12,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_gnhbr")
 
-[node name="Save" type="Button" parent="."]
-layout_mode = 0
-offset_left = 288.0
-offset_top = 1776.0
-offset_right = 802.0
-offset_bottom = 1878.0
-text = "Redraw"
-
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 200.0
-offset_top = 1064.0
-offset_right = 888.0
-offset_bottom = 1744.0
-texture = ExtResource("2_rhxw2")
-
 [node name="FilterableList" parent="." instance=ExtResource("3_fcsfx")]
 
 [node name="ScrollContainer" parent="FilterableList" index="0"]
@@ -50,5 +34,23 @@ offset_bottom = 1016.0
 editable = false
 script = ExtResource("4_vh6ca")
 metadata/_custom_type_script = "uid://b4jf6wsar8kht"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 1064.0
+offset_right = 888.0
+offset_bottom = 1744.0
+texture = ExtResource("2_rhxw2")
+
+[node name="Redraw" type="Button" parent="."]
+layout_mode = 0
+offset_left = 288.0
+offset_top = 1776.0
+offset_right = 802.0
+offset_bottom = 1878.0
+text = "Redraw"
+
+[connection signal="pressed" from="Redraw" to="." method="_on_redraw_pressed"]
 
 [editable path="FilterableList"]
