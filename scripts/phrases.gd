@@ -1,36 +1,46 @@
 extends Common
 
 const NONE = -1
-signal jump_to_lists
+signal jump_to_fills
 
-@onready var phrase_list: FilterableList = $FilterableList
+@onready var _phrase_list: FilterableList = $FilterableList
 
-var _editing_index: int = NONE
+var _editing_real_index: int = NONE
 
 func _ready() -> void:
 
-	phrase_list.all_items.clear()
+	_phrase_list.item_selected.connect(_on_phrase_selected)
 
-	for i in PracticeDB.phrases:
-		phrase_list.all_items.append(i)
+	init_from_db()
 
-	phrase_list.refresh_item_list()
-
-	phrase_list.item_selected.connect(_on_phrase_selected)
-
+	$Phrase.text = ""
 	$Save.disabled = true
 	$Delete.visible = false
 	$Lists.visible = false
+
+func init_from_db() -> void:
+	var all_phrases: Array[FilterableListItem] = []
+
+	for phrase in PracticeDB.phrases:
+		var phrase_item: PhraseItem = PhraseItem.new()
+		phrase_item.text = phrase
+		print({"phrase_item":phrase_item})
+		all_phrases.append(phrase_item)
+
+	_phrase_list.init_all_items(all_phrases)
+	_phrase_list.filter_edit.text = PracticeDB.filter_phrases
+	_phrase_list.apply_filter()
+
 
 func _phrase_contains_lists(phrase: String) -> bool:
 	if phrase.contains("<") and phrase.contains(">"):
 		return true
 	return false
 
-func _on_phrase_selected(index: int) -> void:
-	print("Picked " + str(index))
-	var phrase = PracticeDB.phrases[index]
-	_editing_index = index
+func _on_phrase_selected(item: FilterableListItem) -> void:
+	print("Picked " + str(item.real_index))
+	var phrase = PracticeDB.phrases[item.real_index]
+	_editing_real_index = item.real_index
 	$Phrase.text = phrase
 	$Delete.visible = true
 	$Lists.visible = true
@@ -42,9 +52,6 @@ func _on_phrase_selected(index: int) -> void:
 
 	$Save.text = "Save"
 	$Save.disabled = true
-
-
-
 
 func _on_save_pressed() -> void:
 
@@ -59,17 +66,10 @@ func _on_save_pressed() -> void:
 		_restore_button(2, $Save, "Save")
 		return
 
-
-	if _editing_index == NONE:
-		$Save.text = "Added!"
-		phrase_list.all_items.append(phrase)
-		PracticeDB.phrases.append(phrase)
-		print(phrase_list.all_items)
-		_editing_index = phrase_list.all_items.size() - 1
+	if _editing_real_index == NONE:
+		_add_new_phrase(phrase)
 	else:
-		phrase_list.all_items[_editing_index] = phrase
-		PracticeDB.phrases[_editing_index] = phrase
-		$Save.text = "Updated!"
+		_update_existing_phrase(phrase)
 
 	if _phrase_contains_lists(phrase):
 		$Lists.disabled = false
@@ -78,17 +78,33 @@ func _on_save_pressed() -> void:
 
 	$Delete.visible = true
 	$Lists.visible = true
-	phrase_list.refresh_item_list()
-	phrase_list.item_list.select(_editing_index)
+	_phrase_list.apply_filter()
+
+	_phrase_list.select_by_real_index(_editing_real_index)
+
+	if not _phrase_list.is_visible_by_real_index(_editing_real_index):
+		_editing_real_index = NONE
 
 	$Save.disabled = true
 	_restore_button(2, $Save, "Save")
 
+func _add_new_phrase(phrase: String) -> void:
+	$Save.text = "Added!"
+	var phrase_item: PhraseItem = PhraseItem.new()
+	phrase_item.text = phrase
+	_phrase_list.add_item(phrase_item)
+	PracticeDB.phrases.append(phrase)
+
+func _update_existing_phrase(phrase: String) -> void:
+	var phrase_item: PhraseItem = _phrase_list.get_item_by_real_index(_editing_real_index)
+	phrase_item.text = phrase
+	PracticeDB.phrases[_editing_real_index] = phrase
+	$Save.text = "Updated!"
 
 func _on_new_pressed() -> void:
 	$Phrase.text = ""
-	phrase_list.item_list.deselect_all()
-	_editing_index = NONE
+	_phrase_list.deselect_all()
+	_editing_real_index = NONE
 	$Save.text = "Add phrase"
 	$Save.disabled = true
 	$Lists.visible = false
@@ -110,23 +126,24 @@ func _get_lists_in_phrase(phrase: String) -> Array:
 
 	return matches
 
-func _create_lists_if_missing(list_names: Array) -> void:
+func _create_fills_if_missing(list_names: Array) -> void:
 	print("Creating if missing")
 	for i in list_names:
-		if not PracticeDB.lists.has(i):
-			print("Adding to lists: " + i)
-			PracticeDB.lists[i] = {
+		if not PracticeDB.fills.has(i):
+			print("Adding to fills: " + i)
+			PracticeDB.fills[i] = {
 				"words": [],
-				"phrases": [_editing_index],
+				"phrases": [_editing_real_index],
 			}
 		else:
 			print("Already exists: " + i)
 
 func _on_lists_pressed() -> void:
-	var phrase: String = phrase_list.all_items[_editing_index]
-	var lists_in_phrase: Array = _get_lists_in_phrase(phrase)
-	_create_lists_if_missing(lists_in_phrase)
-	PracticeDB.filter_lists = "|".join(lists_in_phrase)
-	print(lists_in_phrase)
+	#var phrase: String = phrase_list.all_items[_editing_real_index]
+	var phrase = PracticeDB.phrases[_editing_real_index]
+	var fills_in_phrase: Array = _get_lists_in_phrase(phrase)
+	_create_fills_if_missing(fills_in_phrase)
+	PracticeDB.filter_fills = "|".join(fills_in_phrase)
+	print(fills_in_phrase)
 
-	jump_to_lists.emit()
+	jump_to_fills.emit()

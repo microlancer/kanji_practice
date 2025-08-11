@@ -1,33 +1,47 @@
 extends Control
 
-@onready var words_list: FilterableList = $FilterableList
+@onready var _words_list: FilterableList = $FilterableList
 
-var _item_index_to_string: Array = []
+#var _item_index_to_string: Array = []
 
 func _ready() -> void:
 
-	for i in PracticeDB.words:
-		var word = PracticeDB.words[i]
-		words_list.all_items.append(i + " (" + word.furigana + ")")
+	init_from_db()
 
-	words_list.refresh_item_list()
 
-func refresh() -> void:
+	_words_list.apply_filter()
 
-	#replace_list.item_list.clear()
+func init_from_db() -> void:
+	var all_words: Array[FilterableListItem] = []
 
-	words_list.all_items = []
-	_item_index_to_string = []
+	for word in PracticeDB.words:
+		var word_item: WordItem = WordItem.new()
+		word_item.word = word
+		word_item.furigana = PracticeDB.words[word].furigana
+		word_item.mastery = PracticeDB.words[word].mastery
+		word_item.fills = PracticeDB.words[word].fills
+		all_words.append(word_item)
 
-	#var index = 0
-	for i in PracticeDB.words:
-		var word_item: Dictionary = PracticeDB.words[i]
-		print(i)
-		print(word_item.furigana)
-		words_list.all_items.append(i + "(" + word_item.furigana + ")")
-		_item_index_to_string.append(i)
-		#index += 1
-
-	words_list.filter_edit.text = PracticeDB.filter_lists
-
-	words_list.refresh_item_list()
+	_words_list.init_all_items(all_words)
+	_words_list.filter_edit.text = PracticeDB.filter_words
+	_words_list.apply_filter()
+#
+#func refresh() -> void:
+#
+	##replace_list.item_list.clear()
+#
+	#words_list.all_items = []
+	#_item_index_to_string = []
+#
+	##var index = 0
+	#for i in PracticeDB.words:
+		#var word_item: Dictionary = PracticeDB.words[i]
+		#print(i)
+		#print(word_item.furigana)
+		#words_list.all_items.append(i + "(" + word_item.furigana + ")")
+		#_item_index_to_string.append(i)
+		##index += 1
+#
+	#words_list.filter_edit.text = PracticeDB.filter_lists
+#
+	#words_list.refresh_item_list()

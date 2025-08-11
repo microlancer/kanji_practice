@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bes2f2dlre0pj" path="res://scenes/study.tscn" id="2_6ygm7"]
 [ext_resource type="PackedScene" uid="uid://dct2yvx68hix0" path="res://scenes/phrases.tscn" id="4_tlvjx"]
 [ext_resource type="PackedScene" uid="uid://bsfoc2rtvuehg" path="res://scenes/kanji.tscn" id="5_tlvjx"]
-[ext_resource type="PackedScene" uid="uid://dv3fvk7yqpxvj" path="res://scenes/lists.tscn" id="5_vqt6i"]
+[ext_resource type="PackedScene" uid="uid://dv3fvk7yqpxvj" path="res://scenes/fills.tscn" id="5_vqt6i"]
 [ext_resource type="PackedScene" uid="uid://ci1fx6rq8xnk1" path="res://scenes/words.tscn" id="6_vqt6i"]
 
 [node name="KanjiPracticeGame" type="Control"]
@@ -27,7 +27,7 @@ current_tab = 0
 tab_count = 5
 tab_0/title = "Study"
 tab_1/title = "Phrases"
-tab_2/title = "Lists"
+tab_2/title = "Fills"
 tab_3/title = "Words"
 tab_4/title = "Kanji"
 
@@ -36,7 +36,7 @@ tab_4/title = "Kanji"
 [node name="Phrases" parent="TabBar" instance=ExtResource("4_tlvjx")]
 visible = false
 
-[node name="Lists" parent="TabBar" instance=ExtResource("5_vqt6i")]
+[node name="Fills" parent="TabBar" instance=ExtResource("5_vqt6i")]
 visible = false
 
 [node name="Words" parent="TabBar" instance=ExtResource("6_vqt6i")]

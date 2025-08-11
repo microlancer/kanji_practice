@@ -48,6 +48,7 @@ anchor_right = 23.0
 anchor_bottom = 6.65
 offset_right = 8.0
 offset_bottom = 8.0
+theme_override_constants/caret_width = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_by70f")
 theme_override_styles/focus = SubResource("StyleBoxFlat_cr32s")
 scroll_fit_content_height = true

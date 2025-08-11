@@ -1,12 +1,12 @@
 extends Node
 
 var phrases: Array = []
-var lists: Dictionary = {}
+var fills: Dictionary = {}
 var words: Dictionary = {}
 var kanji: Dictionary = {}
 
 var filter_phrases: String = ""
-var filter_lists: String = ""
+var filter_fills: String = ""
 var filter_words: String = ""
 var filter_kanji: String = ""
 
@@ -15,7 +15,7 @@ func _ready() -> void:
 		"<place>の<subarea>で<verbing>"
 	]
 
-	lists = {
+	fills = {
 		"place": {
 			"words": ["駅","家","会社","公園","自宅"],
 			"phrases": [0],
@@ -46,34 +46,37 @@ func _ready() -> void:
 		"駅": {
 			"furigana": "えき",
 			"mastery": 0,
-			"lists": ["place"]
+			"fills": ["place"]
 		},
 		"前": {
 			"furigana": "まえ",
 			"mastery": 0,
-			"lists": ["place"]
+			"fills": ["place"]
 		},
 		"待": {
 			"furigana": "ま",
 			"mastery": 0,
-			"lists": []
+			"fills": []
 		},
 		"待っている": {
 			"furigana": "まっている",
 			"mastery": 0,
-			"lists": ["place"]
+			"fills": ["place"]
 		}
 	}
 
 	kanji = {
 		"駅": {
-			"draw_data": []
+			"draw_data": [],
+			"words": ["駅"]
 		},
 		"前": {
-			"draw_data": []
+			"draw_data": [],
+			"words": ["前"]
 		},
 		"待": {
-			"draw_data": []
+			"draw_data": [],
+			"words": ["待", "待っている"]
 		}
 	}
 
