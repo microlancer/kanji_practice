@@ -55,7 +55,7 @@ offset_left = 528.0
 offset_top = 1480.0
 offset_right = 1042.0
 offset_bottom = 1582.0
-text = "Save phrase"
+text = "Add fill"
 
 [node name="Delete" type="Button" parent="."]
 layout_mode = 0
@@ -79,7 +79,7 @@ offset_left = 688.0
 offset_top = 792.0
 offset_right = 1066.0
 offset_bottom = 894.0
-text = "New list"
+text = "New fill"
 
 [connection signal="text_changed" from="NameEdit" to="." method="_on_words_text_changed"]
 [connection signal="text_changed" from="ListOfWords" to="." method="_on_words_text_changed"]

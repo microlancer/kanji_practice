@@ -39,13 +39,13 @@ offset_right = 1042.0
 offset_bottom = 1582.0
 text = "Save"
 
-[node name="Lists" type="Button" parent="."]
+[node name="Fills" type="Button" parent="."]
 layout_mode = 0
 offset_left = 248.0
 offset_top = 1480.0
 offset_right = 504.0
 offset_bottom = 1582.0
-text = "Lists"
+text = "Fills"
 
 [node name="Delete" type="Button" parent="."]
 layout_mode = 0
@@ -65,5 +65,5 @@ text = "New phrase"
 
 [connection signal="text_changed" from="Phrase" to="." method="_on_phrase_text_changed"]
 [connection signal="pressed" from="Save" to="." method="_on_save_pressed"]
-[connection signal="pressed" from="Lists" to="." method="_on_lists_pressed"]
+[connection signal="pressed" from="Fills" to="." method="_on_fills_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_new_pressed"]

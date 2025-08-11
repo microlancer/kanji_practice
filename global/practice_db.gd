@@ -79,9 +79,3 @@ func _ready() -> void:
 			"words": ["待", "待っている"]
 		}
 	}
-
-func set_button_color(button: Button, color: Color) -> void:
-	button.add_theme_color_override("font_color", color)
-	button.add_theme_color_override("font_pressed_color", color)
-	button.add_theme_color_override("font_focus_color", color)
-	button.add_theme_color_override("font_hover_color", color)

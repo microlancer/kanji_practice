@@ -1,4 +1,4 @@
-extends Common
+extends CommonControl
 
 const NONE = -1
 signal jump_to_fills
@@ -16,7 +16,8 @@ func _ready() -> void:
 	$Phrase.text = ""
 	$Save.disabled = true
 	$Delete.visible = false
-	$Lists.visible = false
+	$Fills.visible = false
+	$Save.text = "Add phrase"
 
 func init_from_db() -> void:
 	var all_phrases: Array[FilterableListItem] = []
@@ -32,7 +33,7 @@ func init_from_db() -> void:
 	_phrase_list.apply_filter()
 
 
-func _phrase_contains_lists(phrase: String) -> bool:
+func _phrase_contains_fills(phrase: String) -> bool:
 	if phrase.contains("<") and phrase.contains(">"):
 		return true
 	return false
@@ -43,14 +44,14 @@ func _on_phrase_selected(item: FilterableListItem) -> void:
 	_editing_real_index = item.real_index
 	$Phrase.text = phrase
 	$Delete.visible = true
-	$Lists.visible = true
+	$Fills.visible = true
 
-	if _phrase_contains_lists(phrase):
-		$Lists.disabled = false
+	if _phrase_contains_fills(phrase):
+		$Fills.disabled = false
 	else:
-		$Lists.disabled = true
+		$Fills.disabled = true
 
-	$Save.text = "Save"
+	$Save.text = "Save changes"
 	$Save.disabled = true
 
 func _on_save_pressed() -> void:
@@ -61,9 +62,7 @@ func _on_save_pressed() -> void:
 		return
 
 	if PracticeDB.phrases.has(phrase):
-		$Save.text = "Already exists"
-		PracticeDB.set_button_color($Save, Color.RED)
-		_restore_button(2, $Save, "Save")
+		button_error($Save, "Already exists")
 		return
 
 	if _editing_real_index == NONE:
@@ -71,13 +70,13 @@ func _on_save_pressed() -> void:
 	else:
 		_update_existing_phrase(phrase)
 
-	if _phrase_contains_lists(phrase):
-		$Lists.disabled = false
+	if _phrase_contains_fills(phrase):
+		$Fills.disabled = false
 	else:
-		$Lists.disabled = true
+		$Fills.disabled = true
 
 	$Delete.visible = true
-	$Lists.visible = true
+	$Fills.visible = true
 	_phrase_list.apply_filter()
 
 	_phrase_list.select_by_real_index(_editing_real_index)
@@ -86,10 +85,10 @@ func _on_save_pressed() -> void:
 		_editing_real_index = NONE
 
 	$Save.disabled = true
-	_restore_button(2, $Save, "Save")
+
 
 func _add_new_phrase(phrase: String) -> void:
-	$Save.text = "Added!"
+	#button_success($Save, "Added")
 	var phrase_item: PhraseItem = PhraseItem.new()
 	phrase_item.text = phrase
 	_phrase_list.add_item(phrase_item)
@@ -99,7 +98,7 @@ func _update_existing_phrase(phrase: String) -> void:
 	var phrase_item: PhraseItem = _phrase_list.get_item_by_real_index(_editing_real_index)
 	phrase_item.text = phrase
 	PracticeDB.phrases[_editing_real_index] = phrase
-	$Save.text = "Updated!"
+	#button_success($Save, "Updated")
 
 func _on_new_pressed() -> void:
 	$Phrase.text = ""
@@ -107,7 +106,7 @@ func _on_new_pressed() -> void:
 	_editing_real_index = NONE
 	$Save.text = "Add phrase"
 	$Save.disabled = true
-	$Lists.visible = false
+	$Fills.visible = false
 	$Delete.visible = false
 
 
@@ -138,7 +137,7 @@ func _create_fills_if_missing(list_names: Array) -> void:
 		else:
 			print("Already exists: " + i)
 
-func _on_lists_pressed() -> void:
+func _on_fills_pressed() -> void:
 	#var phrase: String = phrase_list.all_items[_editing_real_index]
 	var phrase = PracticeDB.phrases[_editing_real_index]
 	var fills_in_phrase: Array = _get_lists_in_phrase(phrase)

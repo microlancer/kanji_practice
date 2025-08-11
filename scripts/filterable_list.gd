@@ -49,6 +49,7 @@ func apply_filter() -> void:
 				"real_index": real_index
 			})
 			item.visible_index = visible_index
+			print("Set visible index to: " + str(visible_index))
 			item.real_index = real_index
 			#if all_items_metadata.size() > 0:
 			#	print("Setting metadata at " + str(index) + " to " + all_items_metadata[index].name)
@@ -128,6 +129,7 @@ func _on_item_list_item_selected(visible_index: int) -> void:
 func select_by_real_index(real_index: int) -> void:
 	# We convert real index to visible index (if possible)
 	_item_list.select(_all_items[real_index].visible_index)
+	_item_list.ensure_current_is_visible()
 
 	#var visible_items_data: Array = replace_list.get_visible_items_metadata()
 	#var index = 0
