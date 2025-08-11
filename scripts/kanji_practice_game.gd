@@ -9,6 +9,18 @@ func _ready() -> void:
 	$TabBar/Fills.jump_to_words.connect(_on_jump_to_words)
 	$TabBar/Words.jump_to_kanji.connect(_on_jump_to_kanji)
 
+	PracticeDB.db_changed.connect(_on_db_changed)
+	PracticeDB.db_loaded.connect(_on_db_loaded)
+
+func _on_db_loaded() -> void:
+	$TabBar/Phrases.init_from_db()
+	$TabBar/Fills.init_from_db()
+	$TabBar/Words.init_from_db()
+	$TabBar/Kanji.init_from_db()
+
+func _on_db_changed() -> void:
+	PracticeDB.save_to_cloud()
+
 func _on_tab_bar_tab_changed(tab: int) -> void:
 	for i in $TabBar.get_children():
 		if i.get_index() != tab:

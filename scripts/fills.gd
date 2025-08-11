@@ -118,6 +118,8 @@ func _on_save_pressed() -> void:
 	$Save.disabled = true
 	#restore_button(2, $Save, "Save changes")
 
+	PracticeDB.db_changed.emit()
+
 func _save_new_fill(fill_name: String, words_array: Array) -> void:
 	#$Save.text = "Added!"
 	var new_fill: FillItem = FillItem.new()
@@ -153,6 +155,7 @@ func _update_existing_fill(fill_name: String, words_array: Array) -> void:
 
 func _create_words_if_missing(words: Array) -> void:
 	print("Creating if missing")
+	var added: bool = false
 	for i in words:
 		if not PracticeDB.words.has(i):
 			print("Adding to words: " + i)
@@ -161,8 +164,12 @@ func _create_words_if_missing(words: Array) -> void:
 				"mastery": 0,
 				"fills": [], #TODO
 			}
+			added = true
 		else:
 			print("Already exists: " + i)
+
+	if added:
+		PracticeDB.db_changed.emit()
 
 func _on_new_pressed() -> void:
 	$NameEdit.text = ""

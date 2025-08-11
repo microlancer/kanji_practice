@@ -102,10 +102,12 @@ func _on_save_pressed() -> void:
 		_editing_real_index = NONE
 
 	$Save.disabled = true
-	restore_button(2, $Save, "Save")
+	#restore_button(2, $Save, "Save")
+
+	PracticeDB.db_changed.emit()
 
 func _save_new_word(word: String, furigana: String, mastery: int) -> void:
-	$Save.text = "Added!"
+	#$Save.text = "Added!"
 	var new_word: WordItem = WordItem.new()
 	new_word.word = word
 	new_word.furigana = furigana
@@ -118,7 +120,7 @@ func _save_new_word(word: String, furigana: String, mastery: int) -> void:
 	}
 
 func _update_existing_word(word: String, furigana: String, mastery: int) -> void:
-	$Save.text = "Updated!"
+	#$Save.text = "Updated!"
 	if word != _editing_original_word:
 		# Word was changed, erase old word
 		PracticeDB.words.erase(_editing_original_word)
@@ -173,6 +175,7 @@ func _list_get_kanji(word: String) -> Array:
 
 func _create_kanji_if_missing(kanji_array: Array) -> void:
 	print("Creating if missing")
+	var added: bool = false
 	for kanji in kanji_array:
 		if not PracticeDB.kanji.has(kanji):
 			print("Adding to kanji: " + kanji)
@@ -180,5 +183,9 @@ func _create_kanji_if_missing(kanji_array: Array) -> void:
 				"draw_data": [],
 				"words": [], #TODO
 			}
+			added = true
 		else:
 			print("Already exists: " + kanji)
+
+	if added:
+		PracticeDB.db_changed.emit()

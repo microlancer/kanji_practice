@@ -81,10 +81,16 @@ func _on_save_pressed() -> void:
 
 	_phrase_list.select_by_real_index(_editing_real_index)
 
-	if not _phrase_list.is_visible_by_real_index(_editing_real_index):
+	if _phrase_list.is_visible_by_real_index(_editing_real_index):
+		pass
+		$Save.text = "Save changes"
+	else:
 		_editing_real_index = NONE
+		$Save.text = "Add phrase"
 
 	$Save.disabled = true
+
+	PracticeDB.db_changed.emit()
 
 
 func _add_new_phrase(phrase: String) -> void:
@@ -93,6 +99,7 @@ func _add_new_phrase(phrase: String) -> void:
 	phrase_item.text = phrase
 	_phrase_list.add_item(phrase_item)
 	PracticeDB.phrases.append(phrase)
+	_editing_real_index = PracticeDB.phrases.size() - 1
 
 func _update_existing_phrase(phrase: String) -> void:
 	var phrase_item: PhraseItem = _phrase_list.get_item_by_real_index(_editing_real_index)
@@ -127,6 +134,7 @@ func _get_lists_in_phrase(phrase: String) -> Array:
 
 func _create_fills_if_missing(list_names: Array) -> void:
 	print("Creating if missing")
+	var added: bool = false
 	for i in list_names:
 		if not PracticeDB.fills.has(i):
 			print("Adding to fills: " + i)
@@ -134,8 +142,12 @@ func _create_fills_if_missing(list_names: Array) -> void:
 				"words": [],
 				"phrases": [_editing_real_index],
 			}
+			added = true
 		else:
 			print("Already exists: " + i)
+
+	if added:
+		PracticeDB.db_changed.emit()
 
 func _on_fills_pressed() -> void:
 	#var phrase: String = phrase_list.all_items[_editing_real_index]
