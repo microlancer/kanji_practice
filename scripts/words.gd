@@ -17,10 +17,7 @@ func _ready() -> void:
 	init_from_db()
 	_words_list.apply_filter()
 
-	$Save.disabled = true
-	$Kanji.visible = false
-	$Reset.visible = false
-	$Delete.visible = false
+
 
 func init_from_db() -> void:
 	var all_words: Array[FilterableListItem] = []
@@ -39,6 +36,13 @@ func init_from_db() -> void:
 func init_filter() -> void:
 	_words_list.filter_edit.text = PracticeDB.filter_words
 	_words_list.apply_filter()
+	$Save.text = "Add word"
+	$Save.disabled = true
+	$Kanji.visible = false
+	$Reset.visible = false
+	$Delete.visible = false
+	$WordEdit.text = ""
+	$FuriganaEdit.text = ""
 
 func _on_item_selected(item: FilterableListItem) -> void:
 	var word_item: WordItem = item as WordItem
@@ -82,6 +86,11 @@ func _on_save_pressed() -> void:
 		return
 
 	if _editing_real_index == NONE:
+
+		if word in PracticeDB.words:
+			button_error($Save, "Word already exists")
+			return
+
 		_save_new_word(word, furigana, mastery)
 	else:
 		_update_existing_word(word, furigana, mastery)

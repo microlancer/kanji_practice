@@ -7,7 +7,7 @@ var fills: Array = []
 func get_text() -> String:
 	if draw_data.is_empty():
 		return text + " (no draw data)"
-	return text
+	return text + " - " + str(draw_data.size()) + " strokes (" + ",".join(draw_data) + ")"
 
 func is_valid() -> bool:
 	return not draw_data.is_empty()

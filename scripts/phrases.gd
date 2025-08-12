@@ -13,11 +13,11 @@ func _ready() -> void:
 
 	init_from_db()
 
-	$Phrase.text = ""
-	$Save.disabled = true
-	$Delete.visible = false
-	$Fills.visible = false
-	$Save.text = "Add phrase"
+	#$Phrase.text = ""
+	#$Save.disabled = true
+	#$Delete.visible = false
+	#$Fills.visible = false
+	#$Save.text = "Add phrase"
 
 func init_from_db() -> void:
 	var all_phrases: Array[FilterableListItem] = []
@@ -34,6 +34,11 @@ func init_from_db() -> void:
 func init_filter() -> void:
 	_phrase_list.filter_edit.text = PracticeDB.filter_phrases
 	_phrase_list.apply_filter()
+	$Phrase.text = ""
+	$Save.disabled = true
+	$Delete.visible = false
+	$Fills.visible = false
+	$Save.text = "Add phrase"
 
 func _phrase_contains_fills(phrase: String) -> bool:
 	if phrase.contains("<") and phrase.contains(">"):
@@ -121,6 +126,7 @@ func _on_new_pressed() -> void:
 
 func _on_phrase_text_changed() -> void:
 	$Save.disabled = false
+	$Fills.visible = false
 
 func _get_lists_in_phrase(phrase: String) -> Array:
 	return PracticeDB.extract_fills(phrase)

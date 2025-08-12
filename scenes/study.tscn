@@ -38,15 +38,26 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_x8trg")
 
 [node name="JapaneseText" parent="Panel" instance=ExtResource("2_8q8l4")]
 layout_mode = 1
+text = ""
 furigana_text_size = 48
 regular_text_size = 72
 
-[node name="Button" type="Button" parent="."]
+[node name="Edit" type="Button" parent="."]
 layout_mode = 0
 offset_left = 864.0
 offset_top = 672.0
 offset_right = 990.0
 offset_bottom = 774.0
 text = "Edit"
+
+[node name="Next" type="Button" parent="."]
+layout_mode = 0
+offset_left = 544.0
+offset_top = 872.0
+offset_right = 670.0
+offset_bottom = 974.0
+text = "Next"
+
+[connection signal="pressed" from="Next" to="." method="_on_next_pressed"]
 
 [editable path="Panel/JapaneseText"]

@@ -30,6 +30,8 @@ func init_from_db() -> void:
 func init_filter() -> void:
 	_fills_list.filter_edit.text = PracticeDB.filter_fills
 	_fills_list.apply_filter()
+	$ListOfWords.text = ""
+	$NameEdit.text = ""
 
 func _on_item_selected(item: FilterableListItem) -> void:
 	var fill: FillItem = item as FillItem
@@ -40,6 +42,7 @@ func _on_item_selected(item: FilterableListItem) -> void:
 	$ListOfWords.text = fill.get_words_as_text()
 	$Delete.visible = true
 	$Words.visible = true
+
 
 	if _list_contains_kanji_words(fill.words):
 		$Words.disabled = false

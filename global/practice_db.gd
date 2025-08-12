@@ -178,7 +178,7 @@ func get_json_string_from_db() -> String:
 		"phrases": phrases,
 		"fills": fills,
 		"words": words,
-		"kanji": kanji
+		"kanji": kanji as Dictionary
 	}
 	return JSON.stringify(all_data)
 
