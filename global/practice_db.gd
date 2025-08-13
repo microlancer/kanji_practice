@@ -349,8 +349,9 @@ func get_json_string_from_db() -> String:
 	return JSON.stringify(all_data)
 
 func extract_fills(string: String) -> Array:
+	print("Extracting fills from: " + string)
 	var regex := RegEx.new()
-	regex.compile("<(.*?)>")
+	regex.compile("([a-z\\-]+)")
 
 	var matches := []
 	for result in regex.search_all(string):

@@ -10,7 +10,7 @@ func is_valid() -> bool:
 
 	for fill in fills:
 		if fill not in PracticeDB.fills:
-			print("Cannot find fill in DB, returning invalid")
+			print("Cannot find fill " + fill + " in DB, returning invalid")
 			return false
 
 		var fill_item: FillItem = FillItem.new()

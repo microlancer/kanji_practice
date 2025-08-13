@@ -40,6 +40,6 @@ func is_valid() -> bool:
 
 func _fill_used_in_phrase() -> bool:
 	for phrase in PracticeDB.phrases:
-		if phrase.contains("<"+name+">"):
+		if phrase.contains(name):
 			return true
 	return false

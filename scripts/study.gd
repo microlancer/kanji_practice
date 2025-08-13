@@ -70,11 +70,11 @@ func _start_study() -> void:
 		return
 
 	var random_fill: FillItem = valid_fills.pick_random()
-	var tag: String = "<>"
+	var tag: String = ""
 
 	print("Random fill: " + random_fill.name)
 
-	tag = "<"+random_fill.name+">"
+	tag = random_fill.name
 
 	var valid_phrases: Array = []
 	for phrase in PracticeDB.phrases:
@@ -115,12 +115,12 @@ func _start_study() -> void:
 					# only the kanji part, because hiragana is already shown
 					# TODO: not implemented, because there can be multiple
 					# kanji in the word which needs to be handled
-					random_phrase = random_phrase.replace("<"+fill+">", "["+fill_word+"]{"+tmp_furigana+"}")
+					random_phrase = random_phrase.replace(fill, "["+fill_word+"]{"+tmp_furigana+"}")
 				else:
-					random_phrase = random_phrase.replace("<"+fill+">", "["+fill_word+"]{"+tmp_furigana+"}")
+					random_phrase = random_phrase.replace(fill, "["+fill_word+"]{"+tmp_furigana+"}")
 				index += 1
 			else:
-				random_phrase = random_phrase.replace("<"+fill+">", fill_word)
+				random_phrase = random_phrase.replace(fill, fill_word)
 
 
 

@@ -41,8 +41,11 @@ func init_filter() -> void:
 	$Save.text = "Add phrase"
 
 func _phrase_contains_fills(phrase: String) -> bool:
-	if phrase.contains("<") and phrase.contains(">"):
+
+	if PracticeDB.extract_fills(phrase).size() > 0:
+		print("Phrase " + phrase + " has fills")
 		return true
+	print("Phrase " + phrase + " does not have any fills")
 	return false
 
 func _on_phrase_selected(item: FilterableListItem) -> void:
