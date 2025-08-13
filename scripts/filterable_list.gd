@@ -151,6 +151,10 @@ func select_by_real_index(real_index: int) -> void:
 	_item_list.select(_all_items[real_index].visible_index)
 	_item_list.ensure_current_is_visible()
 
+func select_by_visible_index(visible_index: int) -> void:
+	_item_list.select(visible_index)
+	var data = _item_list.get_item_metadata(visible_index)
+	item_selected.emit(_all_items[data.real_index])
 	#var visible_items_data: Array = replace_list.get_visible_items_metadata()
 	#var index = 0
 	#for data in visible_items_data:

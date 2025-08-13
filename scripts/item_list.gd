@@ -52,7 +52,11 @@ func _gui_input(event: InputEvent) -> void:
 				velocity = event.relative / get_process_delta_time()
 
 	elif event is InputEventMouseButton:
+		if event.button_index >= 2:
+			#print(event)
+			return
 		if event.pressed:
+			#print(event)
 			accept_event()  # prevent built-in press selection
 
 	# --- Mouse input handling ---

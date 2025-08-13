@@ -10,6 +10,7 @@ const NONE = -1
 func _ready() -> void:
 
 	_kanji_list.item_selected.connect(_on_item_selected)
+	_kanji_list.filter_changed.connect(_on_filter_changed)
 	init_from_db()
 
 	#_draw_panel.stroke_drawn.connect(_on_stroke_drawn)
@@ -40,6 +41,15 @@ func init_filter() -> void:
 	$Example.modulate = Color(255, 255, 255, 1)
 	$KanjiEdit.text = ""
 	_draw_panel.disable()
+
+	if _kanji_list.filter_edit.text != "":
+		_kanji_list.select_by_visible_index(0)
+
+func _on_filter_changed(filter: String) -> void:
+	if filter == "":
+		$Example.visible = false
+		$Example.modulate = Color(255, 255, 255, 1)
+		$KanjiEdit.text = ""
 
 func _on_item_selected(item: FilterableListItem) -> void:
 	var kanji_item: KanjiItem = item as KanjiItem

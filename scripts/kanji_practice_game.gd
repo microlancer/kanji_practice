@@ -1,10 +1,12 @@
 extends Control
 
+const PHRASES_TAB_INDEX = 1
 const FILLS_TAB_INDEX = 2
 const WORDS_TAB_INDEX = 3
 const KANJI_TAB_INDEX = 4
 
 func _ready() -> void:
+	$TabBar/Study.jump_to_phrases.connect(_on_jump_to_phrases)
 	$TabBar/Phrases.jump_to_fills.connect(_on_jump_to_fills)
 	$TabBar/Fills.jump_to_words.connect(_on_jump_to_words)
 	$TabBar/Words.jump_to_kanji.connect(_on_jump_to_kanji)
@@ -42,3 +44,7 @@ func _on_jump_to_words() -> void:
 func _on_jump_to_kanji() -> void:
 	$TabBar.current_tab = KANJI_TAB_INDEX
 	$TabBar/Kanji.init_from_db() # new empty kanji possibly added
+
+func _on_jump_to_phrases() -> void:
+	$TabBar.current_tab = PHRASES_TAB_INDEX
+	$TabBar/Phrases.init_from_db()

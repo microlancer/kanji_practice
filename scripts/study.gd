@@ -1,9 +1,12 @@
 extends Control
 
+
+signal jump_to_phrases
 @onready var japanese_text: JapaneseText = $Panel/JapaneseText
 @onready var _draw_panel: DrawPanel = $DrawPanel
 var _expected_strokes: Array = []
 var _expected_word: String = ""
+var _expected_phrase: String = ""
 #var _strokes_drawn: Array = []
 var _char_index: int = 0 # which character we're writing
 #var _char_stroke_index: int = 0 # which stroke of the current character
@@ -89,6 +92,8 @@ func _start_study() -> void:
 
 	var random_phrase: String = valid_phrases.pick_random()
 
+	_expected_phrase = random_phrase
+
 	var mode: String = "hide_furigana"
 
 	if randi() % 2 == 0:
@@ -146,7 +151,6 @@ func _start_study() -> void:
 		#$Answer.self_modulate.a = 0.5
 
 	japanese_text.set_text(random_phrase)
-
 	print({"exp":_expected_strokes})
 
 	await japanese_text.rendered
@@ -286,3 +290,8 @@ func _on_try_again_pressed() -> void:
 
 func _on_show_answer_pressed() -> void:
 	$Answer.text = _expected_word
+
+
+func _on_edit_pressed() -> void:
+	PracticeDB.filter_phrases = _expected_phrase
+	jump_to_phrases.emit()

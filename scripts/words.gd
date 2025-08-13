@@ -44,6 +44,9 @@ func init_filter() -> void:
 	$WordEdit.text = ""
 	$FuriganaEdit.text = ""
 
+	if _words_list.filter_edit.text != "":
+		_words_list.select_by_visible_index(0)
+
 func _on_item_selected(item: FilterableListItem) -> void:
 	var word_item: WordItem = item as WordItem
 

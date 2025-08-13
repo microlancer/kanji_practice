@@ -10,6 +10,7 @@ var _editing_real_index: int = NONE
 func _ready() -> void:
 
 	_phrase_list.item_selected.connect(_on_phrase_selected)
+	_phrase_list.filter_changed.connect(_on_filter_changed)
 
 	init_from_db()
 
@@ -39,6 +40,17 @@ func init_filter() -> void:
 	$Delete.visible = false
 	$Fills.visible = false
 	$Save.text = "Add phrase"
+
+	if _phrase_list.filter_edit.text != "":
+		_phrase_list.select_by_visible_index(0)
+
+func _on_filter_changed(filter: String) -> void:
+	if filter == "":
+		$Phrase.text = ""
+		$Save.disabled = true
+		$Delete.visible = false
+		$Fills.visible = false
+		$Save.text = "Add phrase"
 
 func _phrase_contains_fills(phrase: String) -> bool:
 
