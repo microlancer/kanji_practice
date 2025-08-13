@@ -1,6 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bn4m2tay0i6rj"]
+[gd_scene load_steps=6 format=3 uid="uid://bn4m2tay0i6rj"]
 
 [ext_resource type="Script" uid="uid://bdj0v3h5wdv6m" path="res://scripts/filterable_list.gd" id="1_cr32s"]
+[ext_resource type="Script" uid="uid://l5si0rm1dh3q" path="res://scripts/item_list.gd" id="2_by70f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_by70f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_by70f"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -37,6 +40,10 @@ custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/outline_size = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_by70f")
+auto_height = true
+script = ExtResource("2_by70f")
 metadata/_edit_lock_ = true
 
 [node name="FilterEdit" type="TextEdit" parent="."]

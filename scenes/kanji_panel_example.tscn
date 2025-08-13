@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://p1onvqcjv8ce"]
 
-[ext_resource type="Script" uid="uid://d0sjg7bs0se80" path="res://scripts/kanji_draw_panel.gd" id="2_8umj3"]
-[ext_resource type="FontFile" uid="uid://bhh4g2kghn2x1" path="res://assets/fonts/KleeOne-Regular.ttf" id="2_o8vpi"]
+[ext_resource type="Script" uid="uid://d0sjg7bs0se80" path="res://scripts/kanji_draw_panel.gd" id="1_xvps5"]
+[ext_resource type="FontFile" uid="uid://bhh4g2kghn2x1" path="res://assets/fonts/KleeOne-Regular.ttf" id="2_646ap"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_qm0hu"]
 
@@ -40,7 +40,7 @@ anchor_bottom = 16.8
 grow_horizontal = 2
 grow_vertical = 2
 mouse_force_pass_scroll_events = false
-script = ExtResource("2_8umj3")
+script = ExtResource("1_xvps5")
 metadata/_edit_use_anchors_ = true
 
 [node name="InstructionsLabel" type="RichTextLabel" parent="Control"]
@@ -65,7 +65,7 @@ layout_mode = 0
 offset_top = 72.0
 offset_right = 448.0
 offset_bottom = 224.0
-theme_override_fonts/normal_font = ExtResource("2_o8vpi")
+theme_override_fonts/normal_font = ExtResource("2_646ap")
 theme_override_font_sizes/normal_font_size = 88
 bbcode_enabled = true
 text = "[center]AAA[/center]"

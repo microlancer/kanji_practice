@@ -22,10 +22,24 @@ func is_valid() -> bool:
 			continue
 		if word in PracticeDB.words:
 			var word_item: WordItem = WordItem.new()
+			word_item.fills = []
+			word_item.mastery = 0
+			word_item.word = word
 			word_item.furigana = PracticeDB.words[word].furigana
 			if not word_item.is_valid():
+				print("Word item is not valid: " + word)
 				return false
 		else:
+			print("Word not found in PracticeDB: " + word)
 			return false
 
+	if not _fill_used_in_phrase():
+		return false
+
 	return true
+
+func _fill_used_in_phrase() -> bool:
+	for phrase in PracticeDB.phrases:
+		if phrase.contains("<"+name+">"):
+			return true
+	return false

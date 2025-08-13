@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Kanji Practice"
+config/version="1.0.3"
 run/main_scene="uid://dofao4rntufk3"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 run/max_fps=20
@@ -27,6 +28,7 @@ window/size/viewport_height=1920
 window/size/window_width_override=540
 window/size/window_height_override=960
 window/stretch/mode="canvas_items"
+window/handheld/orientation=1
 
 [gui]
 
@@ -37,4 +39,5 @@ theme/custom_font="uid://bhh4g2kghn2x1"
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)

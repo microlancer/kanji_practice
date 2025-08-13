@@ -5,6 +5,7 @@ addons
 
 # Godot-specific ignores
 .import/
+android
 export.cfg
 export_credentials.cfg
 

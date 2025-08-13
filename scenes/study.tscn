@@ -1,7 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bes2f2dlre0pj"]
+[gd_scene load_steps=9 format=3 uid="uid://bes2f2dlre0pj"]
 
 [ext_resource type="Script" uid="uid://ciw76hlt2ogtq" path="res://scripts/study.gd" id="1_e7rny"]
 [ext_resource type="PackedScene" uid="uid://cvxd2f8dbnvbs" path="res://addons/godot_japanese_text/japanese_text.tscn" id="2_8q8l4"]
+[ext_resource type="Script" uid="uid://de5btcjhreqd2" path="res://scripts/draw_panel.gd" id="3_x8trg"]
+[ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/kanji-block2.png" id="3_xc6te"]
+[ext_resource type="AudioStream" uid="uid://dfw2ojhav7plk" path="res://assets/Fantasy_UI (4).wav" id="5_cjqim"]
+[ext_resource type="AudioStream" uid="uid://8c8cf4nqpt65" path="res://assets/Fantasy_UI (5).wav" id="6_rw6m0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8trg"]
 bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
@@ -14,6 +18,9 @@ corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cjqim"]
+texture = ExtResource("3_xc6te")
 
 [node name="Study" type="Control"]
 layout_mode = 3
@@ -52,12 +59,68 @@ text = "Edit"
 
 [node name="Next" type="Button" parent="."]
 layout_mode = 0
-offset_left = 544.0
-offset_top = 872.0
-offset_right = 670.0
-offset_bottom = 974.0
+offset_left = 920.0
+offset_top = 1800.0
+offset_right = 1046.0
+offset_bottom = 1902.0
 text = "Next"
 
+[node name="Clear" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 96.0
+offset_top = 1792.0
+offset_right = 225.0
+offset_bottom = 1894.0
+text = "Clear"
+
+[node name="TryAgain" type="Button" parent="."]
+layout_mode = 0
+offset_left = 288.0
+offset_top = 1800.0
+offset_right = 508.0
+offset_bottom = 1902.0
+text = "Try again"
+
+[node name="ShowAnswer" type="Button" parent="."]
+layout_mode = 0
+offset_left = 552.0
+offset_top = 1800.0
+offset_right = 859.0
+offset_bottom = 1902.0
+text = "Show answer"
+
+[node name="DrawPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 952.0
+offset_right = 976.0
+offset_bottom = 1792.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_cjqim")
+script = ExtResource("3_x8trg")
+metadata/_custom_type_script = "uid://de5btcjhreqd2"
+
+[node name="Answer" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 768.0
+offset_right = 1080.0
+offset_bottom = 954.0
+theme_override_font_sizes/normal_font_size = 128
+bbcode_enabled = true
+text = "answer goes here"
+horizontal_alignment = 1
+
+[node name="Sound1" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_cjqim")
+
+[node name="Sound2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_rw6m0")
+
 [connection signal="pressed" from="Next" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="Clear" to="." method="_on_clear_pressed"]
+[connection signal="pressed" from="TryAgain" to="." method="_on_try_again_pressed"]
+[connection signal="pressed" from="ShowAnswer" to="." method="_on_show_answer_pressed"]
+[connection signal="stroke_drawn" from="DrawPanel" to="." method="_on_draw_panel_stroke_drawn"]
 
 [editable path="Panel/JapaneseText"]

@@ -21,4 +21,14 @@ func is_valid() -> bool:
 	if furigana == "":
 		print("No furigana " + word)
 		return  false
+
+	if not _word_exists_in_fill():
+		return false
+
 	return true
+
+func _word_exists_in_fill() -> bool:
+	for name in PracticeDB.fills:
+		if PracticeDB.fills[name].words.has(word):
+			return true
+	return false

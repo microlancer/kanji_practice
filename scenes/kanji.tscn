@@ -44,28 +44,28 @@ metadata/_custom_type_script = "uid://b4jf6wsar8kht"
 
 [node name="Redraw" type="Button" parent="."]
 layout_mode = 0
-offset_left = 288.0
-offset_top = 1776.0
-offset_right = 802.0
-offset_bottom = 1878.0
+offset_left = 294.0
+offset_top = 1026.0
+offset_right = 808.0
+offset_bottom = 1128.0
 text = "Redraw"
 
 [node name="DrawPanel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 188.0
-offset_top = 1060.0
-offset_right = 888.0
-offset_bottom = 1760.0
+offset_left = 191.0
+offset_top = 1157.0
+offset_right = 891.0
+offset_bottom = 1857.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_ghykn")
 script = ExtResource("5_fl8bf")
 metadata/_custom_type_script = "uid://de5btcjhreqd2"
 
 [node name="Example" type="Label" parent="."]
 layout_mode = 0
-offset_left = 190.0
-offset_top = 910.0
-offset_right = 890.0
-offset_bottom = 1779.0
+offset_left = 193.0
+offset_top = 1007.0
+offset_right = 893.0
+offset_bottom = 1876.0
 text = "漢"
 label_settings = SubResource("LabelSettings_fl8bf")
 horizontal_alignment = 1

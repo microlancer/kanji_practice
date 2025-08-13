@@ -16,8 +16,9 @@ func is_valid() -> bool:
 		var fill_item: FillItem = FillItem.new()
 		fill_item.words = PracticeDB.fills[fill].words
 		fill_item.phrases = PracticeDB.fills[fill].phrases
+		fill_item.name = fill
 		if not fill_item.is_valid():
-			print("Fill item is not valid")
+			print("Fill item is not valid: " + fill)
 			return false
 
 	return true

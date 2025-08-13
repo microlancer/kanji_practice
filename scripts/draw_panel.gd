@@ -21,19 +21,24 @@ extends Panel
 
 var prev_point = Vector2.ZERO
 
-var strokeIndex = 0
+var strokeIndex: int = 0
 var strokes = [[]]
 var alreadyDrawnIndex = -1
 var antialiasing = true
 var brush_color = Color.WHITE_SMOKE #Color.GOLDENROD
-var brush_width = 5
-var minimum_point_distance = 3
+var brush_width = 10
+var minimum_point_distance = 5
 var enabled = true
+var _requested_clear: bool = false
+#var _requested_refresh: bool = false
+@export var uncap_fps_on_enable: bool = false
+var _old_fps: int
 
 signal stroke_drawn(strokeIndex: int, direction: String)
 
 func _ready():
 	Input.set_use_accumulated_input(false)
+	_old_fps = Engine.max_fps
 	pass
 
 func end_stroke():
@@ -43,10 +48,30 @@ func end_stroke():
 	queue_redraw()
 	var direction = calculate_stroke(strokes[strokeIndex])
 	#print(direction)
+	print("emitting strokeIndex: " + str(strokeIndex))
 	stroke_drawn.emit(strokeIndex, direction)
-	# start a new stroke
-	strokeIndex += 1
+
+	# since clear() setting strokeIndex during emit will be overwritten here,
+	# we will check if that was called and intended to be reset
+	if _requested_clear:
+		strokeIndex = 0
+		_requested_clear = false
+	else:
+		# continue with the next new stroke
+		print("Incrementing stroke index")
+		strokeIndex += 1
+
+	print("Starting next stroke with empty array")
 	strokes.append([])
+
+	if uncap_fps_on_enable:
+		print("Resetting FPS to: " + str(_old_fps))
+		Engine.max_fps = _old_fps
+	await get_tree().process_frame
+	_handling_end = false
+
+var _handling_end: bool = false
+var _is_drawing: bool = false
 
 func _gui_input(event):
 
@@ -59,10 +84,26 @@ func _gui_input(event):
 		#print("out of bounds")
 		return
 
-	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+	if not _is_drawing and event is InputEventMouseMotion:
+		#print("Motion velocity: " + str(event.velocity))
+		return
+
+	if event is InputEventScreenTouch:
+		print("Touch index: " + str(event.index))
+		# Ignore release events with zero touch points (ghost events)
+		if not event.pressed and event.index <= 0:
+			return
+
+
+
+	if not _handling_end and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+
 		if (strokes[strokeIndex].size() > 0):
-			#print("event="+event.as_text())
+			_handling_end = true
+			_is_drawing = false
+			print("event="+event.as_text())
 			end_stroke()
+			queue_redraw()
 		#_circle_pos = []
 		return
 
@@ -75,7 +116,12 @@ func _gui_input(event):
 			#print('skip')
 			return
 
+	#print("Adding position")
+	_is_drawing = true
 	strokes[strokeIndex].append(event.position)
+	if uncap_fps_on_enable and Engine.max_fps > 0:
+		print("Uncapping FPS")
+		Engine.max_fps = 0
 	queue_redraw()
 
 func is_out_of_bounds(point):
@@ -83,6 +129,9 @@ func is_out_of_bounds(point):
 	var out_of_bounds = point.x < margin or point.y < margin \
 		or point.x > self.size.x - margin or point.y > self.size.y - margin
 	return out_of_bounds
+
+func refresh():
+	_draw()
 
 func _draw():
 
@@ -102,10 +151,10 @@ func _draw():
 			if is_out_of_bounds(point):
 				continue;
 			if point_index == 0:
-				draw_circle(point, brush_width - 1, brush_color)
+				draw_circle(point, brush_width - 3, brush_color)
 			elif point_index == stroke.size()-1:
 				draw_line(prev_point, point, brush_color, brush_width, antialiasing)
-				draw_circle(point, brush_width - 1, brush_color)
+				draw_circle(point, brush_width - 3, brush_color)
 			else:
 				draw_line(prev_point, point, brush_color, brush_width, antialiasing)
 			prev_point = point
@@ -164,9 +213,15 @@ func _on_mouse_exited() -> void:
 	end_stroke()
 
 func clear():
+	print("Setting strokeIndex to 0")
 	strokeIndex = 0
 	strokes = [[]]
+	Input.set_use_accumulated_input(false)
 	alreadyDrawnIndex = -1
+	print("strokeIndex: " + str(strokeIndex))
+	_requested_clear = true
+	_handling_end = false
+	_is_drawing = false
 	queue_redraw()
 
 # this is just an example of how to clear the draw panel
@@ -175,6 +230,9 @@ func _on_button_button_down() -> void:
 
 func disable():
 	enabled = false
+	if uncap_fps_on_enable:
+		print("Resetting FPS to: " + str(_old_fps))
+		Engine.max_fps = _old_fps
 
 func enable():
 	enabled = true
