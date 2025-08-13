@@ -23,6 +23,9 @@ func _ready() -> void:
 	#_visible_items_metadata = all_items_metadata
 	#item_list = $ScrollContainer/ItemList
 
+#func _process(delta: float) -> void:
+#	$ScrollContainer.scroll_vertical = 999
+
 func _on_clear_button_pressed() -> void:
 	filter_edit.text = ""
 	apply_filter()

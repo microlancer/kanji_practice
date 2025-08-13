@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Kanji Practice"
-config/version="1.0.3"
+config/version="1.0.4"
 run/main_scene="uid://dofao4rntufk3"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 run/max_fps=20
@@ -34,6 +34,10 @@ window/handheld/orientation=1
 
 theme/custom="uid://cx2ywcuq1e35u"
 theme/custom_font="uid://bhh4g2kghn2x1"
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [rendering]
 

@@ -31,7 +31,7 @@ var minimum_point_distance = 5
 var enabled = true
 var _requested_clear: bool = false
 #var _requested_refresh: bool = false
-@export var uncap_fps_on_enable: bool = false
+@export var uncap_fps_on_enable: bool = true
 var _old_fps: int
 
 signal stroke_drawn(strokeIndex: int, direction: String)
@@ -53,13 +53,14 @@ func end_stroke():
 
 	# since clear() setting strokeIndex during emit will be overwritten here,
 	# we will check if that was called and intended to be reset
-	if _requested_clear:
-		strokeIndex = 0
-		_requested_clear = false
-	else:
-		# continue with the next new stroke
-		print("Incrementing stroke index")
-		strokeIndex += 1
+	#if _requested_clear:
+		#print("Resetting strokeIndex to 0 due to _requested_clear")
+		#strokeIndex = 0
+		#_requested_clear = false
+	#else:
+	# continue with the next new stroke
+	print("Incrementing stroke index")
+	strokeIndex += 1
 
 	print("Starting next stroke with empty array")
 	strokes.append([])
@@ -67,11 +68,18 @@ func end_stroke():
 	if uncap_fps_on_enable:
 		print("Resetting FPS to: " + str(_old_fps))
 		Engine.max_fps = _old_fps
-	await get_tree().process_frame
+	#await get_tree().process_frame
 	_handling_end = false
+	_is_drawing = false
 
 var _handling_end: bool = false
 var _is_drawing: bool = false
+
+func _process(_delta: float) -> void:
+	if _requested_clear:
+		print("Resetting strokeIndex to 0 due to _requested_clear")
+		strokeIndex = 0
+		_requested_clear = false
 
 func _gui_input(event):
 
