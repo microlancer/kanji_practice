@@ -1,0 +1,63 @@
+[gd_scene load_steps=4 format=3 uid="uid://o8s7ens51p2x"]
+
+[ext_resource type="Script" uid="uid://bpi00araru4au" path="res://test.gd" id="1_37kl0"]
+[ext_resource type="Script" uid="uid://de5btcjhreqd2" path="res://scripts/draw_panel.gd" id="2_8uh7m"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8uh7m"]
+font_size = 1000
+font_color = Color(1, 1, 1, 0.0901961)
+
+[node name="Test" type="Node2D"]
+script = ExtResource("1_37kl0")
+
+[node name="DrawPanel" type="Panel" parent="."]
+custom_minimum_size = Vector2(500, 500)
+offset_left = 24.0
+offset_top = 96.0
+offset_right = 1072.0
+offset_bottom = 1152.0
+script = ExtResource("2_8uh7m")
+metadata/_custom_type_script = "uid://de5btcjhreqd2"
+
+[node name="Label" type="Label" parent="DrawPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -280.0
+offset_bottom = 112.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "あ"
+label_settings = SubResource("LabelSettings_8uh7m")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Clear" type="Button" parent="."]
+offset_left = 136.0
+offset_top = 1176.0
+offset_right = 360.0
+offset_bottom = 1254.0
+text = "Clear"
+
+[node name="Done" type="Button" parent="."]
+offset_left = 664.0
+offset_top = 1176.0
+offset_right = 953.0
+offset_bottom = 1254.0
+text = "Done"
+
+[node name="TextEdit" type="TextEdit" parent="."]
+offset_left = 48.0
+offset_top = 1344.0
+offset_right = 1024.0
+offset_bottom = 1928.0
+text = "waefaweff"
+wrap_mode = 1
+
+[connection signal="stroke_drawn" from="DrawPanel" to="." method="_on_draw_panel_stroke_drawn"]
+[connection signal="stroke_drawn_raw" from="DrawPanel" to="." method="_on_draw_panel_stroke_drawn_raw"]
+[connection signal="pressed" from="Clear" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Done" to="." method="_on_done_pressed"]

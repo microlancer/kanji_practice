@@ -35,6 +35,7 @@ var _requested_clear: bool = false
 var _old_fps: int
 
 signal stroke_drawn(strokeIndex: int, direction: String)
+signal stroke_drawn_raw(strokeIndex: int, points: Array)
 
 func _ready():
 	Input.set_use_accumulated_input(false)
@@ -50,6 +51,8 @@ func end_stroke():
 	#print(direction)
 	print("emitting strokeIndex: " + str(strokeIndex))
 	stroke_drawn.emit(strokeIndex, direction)
+	print("emitting strokeIndex: " + str(strokeIndex))
+	stroke_drawn_raw.emit(strokeIndex, strokes[strokeIndex])
 
 	# since clear() setting strokeIndex during emit will be overwritten here,
 	# we will check if that was called and intended to be reset

@@ -154,6 +154,11 @@ func select_by_real_index(real_index: int) -> void:
 func select_by_visible_index(visible_index: int) -> void:
 	_item_list.select(visible_index)
 	var data = _item_list.get_item_metadata(visible_index)
+
+	if not data:
+		print("No item selected")
+		return
+
 	item_selected.emit(_all_items[data.real_index])
 	#var visible_items_data: Array = replace_list.get_visible_items_metadata()
 	#var index = 0

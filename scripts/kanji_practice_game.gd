@@ -19,6 +19,7 @@ func _on_db_loaded() -> void:
 	$TabBar/Fills.init_from_db()
 	$TabBar/Words.init_from_db()
 	$TabBar/Kanji.init_from_db()
+	$TabBar/Kana.init_from_db()
 
 func _on_db_changed() -> void:
 	PracticeDB.save_to_cloud()

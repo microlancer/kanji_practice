@@ -7,11 +7,13 @@ var phrases: Array = []
 var fills: Dictionary = {}
 var words: Dictionary = {}
 var kanji: Dictionary = {}
+var kana: Dictionary = {}
 
 var filter_phrases: String = ""
 var filter_fills: String = ""
 var filter_words: String = ""
 var filter_kanji: String = ""
+var filter_kana: String = ""
 
 var cloud_url: String = "https://microlancer.io/kanji/index.php?id=123"
 
@@ -337,6 +339,7 @@ func set_db_from_json_string(text: String) -> void:
 	fills = data.fills
 	words = data.words
 	kanji = data.kanji
+	kana = data.kana
 	db_loaded.emit()
 
 func get_json_string_from_db() -> String:
@@ -344,7 +347,8 @@ func get_json_string_from_db() -> String:
 		"phrases": phrases,
 		"fills": fills,
 		"words": words,
-		"kanji": kanji as Dictionary
+		"kanji": kanji as Dictionary,
+		"kana": kana as Dictionary
 	}
 	return JSON.stringify(all_data)
 
@@ -367,8 +371,60 @@ func get_kanji_array(word: String) -> Array:
 			kanji_array.append(c)
 	return kanji_array
 
-func get_draw_data_for_kana(c: String) -> Array:
-	if c not in _kana_draw_data:
-		print_debug("Cannot find " + c)
+func get_draw_data_for_kana(c: String) -> String:
+	if c not in kana:
+		print_debug("Cannot find kana: " + c)
+		return ""
+	return kana[c].draw_data
+
+func get_draw_data_for_kanji(k: String) -> String:
+	if k not in kanji:
+		print_debug("Cannot find kanji: " + k)
+		return ""
+	return kanji[k].draw_data
+
+func encode_all_strokes(all_strokes: Array) -> String:
+	var bytes: PackedByteArray = var_to_bytes(all_strokes)
+	if not bytes:
+		print("Unable to serialize: " + str(bytes.size()))
+		return ""
+	#var use_compression = false
+	var base64: String = ""
+	#if use_compression:
+		#var compressed: PackedByteArray = bytes.compress(FileAccess.COMPRESSION_ZSTD)
+		#if not compressed:
+			#print("Unable to compress: " + str(bytes.size()))
+			#return ""
+		#base64 = Marshalls.raw_to_base64(compressed)
+
+	base64 = Marshalls.raw_to_base64(bytes)
+	if base64 == "":
+		print("Unable to base 64 encode: " + str(bytes.size()))
+		return ""
+	#return {
+		#"original_size": bytes.size(),
+		#"base64": base64
+	#}
+	return base64
+	#return compressed.to_base64()
+
+func decode_all_strokes(base64: String, original_size: int) -> Array:
+	print("base64-len: " + str(base64.length()))
+	if base64 == "":
+		print("No string to decode")
 		return []
-	return _kana_draw_data[c]
+	#var was_compressed: bool = false
+	var uncompressed: PackedByteArray = Marshalls.base64_to_raw(base64)
+	#if was_compressed:
+		#var compressed: PackedByteArray = Marshalls.base64_to_raw(base64)
+		#print("compressed-len: " + str(compressed.size()))
+		#uncompressed = compressed.decompress(original_size, FileAccess.COMPRESSION_ZSTD)
+		#print("uncompressed-len: " + str(uncompressed.size()))
+		#if not uncompressed:
+			#print("Unable to decompress: " + str(uncompressed.size()))
+			#return []
+	var all_strokes: Variant = bytes_to_var(uncompressed)
+	if all_strokes == null:
+		print("Unable to convert bytes to var: " + str(base64.length))
+		return []
+	return all_strokes

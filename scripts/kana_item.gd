@@ -1,4 +1,4 @@
-class_name KanjiItem
+class_name KanaItem
 extends FilterableListItem
 
 var draw_data: String = ""
@@ -7,7 +7,7 @@ var fills: Array = []
 func get_text() -> String:
 	if draw_data == "":
 		return text + " (no draw data)"
-	return text + " - " + str(draw_data.length()) + " bytes"
+	return text + " (" + str(draw_data.length()) + " bytes)"
 
 func is_valid() -> bool:
-	return not draw_data == ""
+	return draw_data != ""

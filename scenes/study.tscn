@@ -121,6 +121,6 @@ stream = ExtResource("6_rw6m0")
 [connection signal="pressed" from="Clear" to="." method="_on_clear_pressed"]
 [connection signal="pressed" from="TryAgain" to="." method="_on_try_again_pressed"]
 [connection signal="pressed" from="ShowAnswer" to="." method="_on_show_answer_pressed"]
-[connection signal="stroke_drawn" from="DrawPanel" to="." method="_on_draw_panel_stroke_drawn"]
+[connection signal="stroke_drawn_raw" from="DrawPanel" to="." method="_on_draw_panel_stroke_drawn_raw"]
 
 [editable path="Panel/JapaneseText"]

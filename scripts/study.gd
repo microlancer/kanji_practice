@@ -218,7 +218,7 @@ func _loosely_matches(a: String, b: String) -> bool:
 
 	return false
 
-func _on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void:
+func xxx_on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void:
 	print({"i":strokeIndex,"d":direction})
 	print(_expected_strokes)
 	#_strokes_drawn.append(direction)
@@ -274,9 +274,13 @@ func _get_strokes_for_word(word: String) -> Array:
 
 func _get_strokes_for_char(c: String) -> Array:
 	if JapaneseText.is_kanji(c):
-		return PracticeDB.kanji[c].draw_data
-	return PracticeDB.get_draw_data_for_kana(c)
-
+		var draw_data_encoded = PracticeDB.get_draw_data_for_kanji(c)
+		var draw_data = PracticeDB.decode_all_strokes(draw_data_encoded, -1)
+		return draw_data
+		#return PracticeDB.kanji[c].draw_data
+	var draw_data_encoded = PracticeDB.get_draw_data_for_kana(c)
+	var draw_data = PracticeDB.decode_all_strokes(draw_data_encoded, -1)
+	return draw_data
 
 func _on_try_again_pressed() -> void:
 	$Answer.text = ""
@@ -295,3 +299,44 @@ func _on_show_answer_pressed() -> void:
 func _on_edit_pressed() -> void:
 	PracticeDB.filter_phrases = _expected_phrase
 	jump_to_phrases.emit()
+
+
+func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
+	print(points)
+	print("normalizing")
+	var sig = StrokeUtils.process_stroke(points, 32, 0.02, true)
+	print(sig)
+
+	var reference_sig: Dictionary = _expected_strokes[_char_index][strokeIndex]
+
+	var similarity: float = StrokeUtils.compare_strokes2(reference_sig, sig, true, 0.25)
+	print("Comparing signatures, similarity: " + str(similarity))
+	# compare_strokes returns a 0.0 (identical) to 1.0 (max difference) range
+	if similarity < 0.6:
+		# correct
+		if strokeIndex == _expected_strokes[_char_index].size() - 1:
+			# end of character success
+			print("End of character success")
+			_show_answer_progress()
+			_char_index += 1
+			_draw_panel.clear()
+			if _char_index == _expected_strokes.size():
+				print("End of word, move to next quiz")
+				$Sound2.play()
+				_start_study()
+				return
+			else:
+				print("More characters remaining")
+				$Sound1.play()
+		else:
+			print("Not end of character, keep going")
+			# not end of character yet, keep going
+			pass
+	else:
+		# incorrect stroke
+		$Answer.text = "incorrect"
+		_draw_panel.brush_color = Color.RED
+		#_draw_panel._requested_refresh = true
+		_draw_panel.disable()
+		$TryAgain.visible = true
+		$ShowAnswer.visible = true

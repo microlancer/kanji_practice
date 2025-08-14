@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dofao4rntufk3"]
+[gd_scene load_steps=9 format=3 uid="uid://dofao4rntufk3"]
 
 [ext_resource type="Script" uid="uid://b78er31qaq8bi" path="res://scripts/kanji_practice_game.gd" id="1_8cksl"]
 [ext_resource type="PackedScene" uid="uid://bes2f2dlre0pj" path="res://scenes/study.tscn" id="2_6ygm7"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bsfoc2rtvuehg" path="res://scenes/kanji.tscn" id="5_tlvjx"]
 [ext_resource type="PackedScene" uid="uid://dv3fvk7yqpxvj" path="res://scenes/fills.tscn" id="5_vqt6i"]
 [ext_resource type="PackedScene" uid="uid://ci1fx6rq8xnk1" path="res://scenes/words.tscn" id="6_vqt6i"]
+[ext_resource type="PackedScene" uid="uid://cj2pisgqrvjpg" path="res://scenes/kana.tscn" id="7_3q3tu"]
 [ext_resource type="PackedScene" uid="uid://cj48055cmnawe" path="res://options.tscn" id="7_vqt6i"]
 
 [node name="KanjiPracticeGame" type="Control"]
@@ -27,13 +28,14 @@ offset_right = -8.0
 offset_bottom = 102.0
 grow_horizontal = 2
 current_tab = 0
-tab_count = 6
+tab_count = 7
 tab_0/title = "Practice"
 tab_1/title = "Phrases"
 tab_2/title = "Fills"
 tab_3/title = "Words"
 tab_4/title = "Kanji"
-tab_5/title = "Options"
+tab_5/title = "C"
+tab_6/title = "Options"
 
 [node name="Study" parent="TabBar" instance=ExtResource("2_6ygm7")]
 
@@ -47,6 +49,9 @@ visible = false
 visible = false
 
 [node name="Kanji" parent="TabBar" instance=ExtResource("5_tlvjx")]
+visible = false
+
+[node name="Kana" parent="TabBar" instance=ExtResource("7_3q3tu")]
 visible = false
 
 [node name="Options" parent="TabBar" instance=ExtResource("7_vqt6i")]

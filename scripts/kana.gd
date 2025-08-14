@@ -1,6 +1,6 @@
 extends Control
 
-@onready var _kanji_list: FilterableList = $FilterableList
+@onready var _kana_list: FilterableList = $FilterableList
 var _editing_real_index: int = 0
 var _strokes: Array = []
 
@@ -9,8 +9,8 @@ const NONE = -1
 
 func _ready() -> void:
 
-	_kanji_list.item_selected.connect(_on_item_selected)
-	_kanji_list.filter_changed.connect(_on_filter_changed)
+	_kana_list.item_selected.connect(_on_item_selected)
+	_kana_list.filter_changed.connect(_on_filter_changed)
 	init_from_db()
 
 	#_draw_panel.stroke_drawn.connect(_on_stroke_drawn)
@@ -20,55 +20,53 @@ func _ready() -> void:
 	_draw_panel.disable()
 
 func init_from_db() -> void:
-	var all_kanji: Array[FilterableListItem] = []
+	var all_kana: Array[FilterableListItem] = []
 
-	for kanji in PracticeDB.kanji:
-		print(kanji)
-		var kanji_item: KanjiItem = KanjiItem.new()
-		kanji_item.text = kanji
-		if "draw_data" not in PracticeDB.kanji[kanji] or \
-			not PracticeDB.kanji[kanji].draw_data is String:
-			PracticeDB.kanji[kanji] = {
+	for kana in PracticeDB.kana:
+		print(kana)
+		var kana_item: KanaItem = KanaItem.new()
+		kana_item.text = kana
+		if "draw_data" not in PracticeDB.kana[kana]:
+			PracticeDB.kana[kana] = {
 				"draw_data": ""
 			}
-		print(PracticeDB.kanji[kanji].draw_data)
-		kanji_item.draw_data = PracticeDB.kanji[kanji].draw_data
-		all_kanji.append(kanji_item)
+		kana_item.draw_data = PracticeDB.kana[kana].draw_data
+		all_kana.append(kana_item)
 
-	print(all_kanji)
+	print(all_kana)
 
-	_kanji_list.init_all_items(all_kanji)
+	_kana_list.init_all_items(all_kana)
 	init_filter()
 
 func init_filter() -> void:
-	_kanji_list.filter_edit.text = PracticeDB.filter_kanji
-	_kanji_list.apply_filter()
+	_kana_list.filter_edit.text = PracticeDB.filter_kana
+	_kana_list.apply_filter()
 	$Example.visible = false
 	$Example.modulate = Color(255, 255, 255, 1)
-	$KanjiEdit.text = ""
+	$KanaEdit.text = ""
 	_draw_panel.disable()
 
-	if _kanji_list.filter_edit.text != "":
-		_kanji_list.select_by_visible_index(0)
+	if _kana_list.filter_edit.text != "":
+		_kana_list.select_by_visible_index(0)
 
 func _on_filter_changed(filter: String) -> void:
 	if filter == "":
 		$Example.visible = false
 		$Example.modulate = Color(255, 255, 255, 1)
-		$KanjiEdit.text = ""
+		$KanaEdit.text = ""
 
 func _on_item_selected(item: FilterableListItem) -> void:
-	var kanji_item: KanjiItem = item as KanjiItem
-	_editing_real_index = kanji_item.real_index
-	$KanjiEdit.text = kanji_item.text
+	var kana_item: KanaItem = item as KanaItem
+	_editing_real_index = kana_item.real_index
+	$KanaEdit.text = kana_item.text
 	$Redraw.disabled = false
 
-	if kanji_item.draw_data.is_empty():
+	if kana_item.draw_data.is_empty():
 		$Example.visible = true
-		$Example.text = kanji_item.text
+		$Example.text = kana_item.text
 		$Example.modulate = Color(255, 255, 255, 0.2)
 	else:
-		$Example.text = kanji_item.text
+		$Example.text = kana_item.text
 		$Example.visible = true
 		$Example.modulate = Color(255, 255, 255, 1)
 
@@ -78,8 +76,8 @@ func _on_redraw_pressed() -> void:
 	if $Redraw.text == "Save":
 		# Store the collected stroke data
 		_draw_panel.disable()
-		var kanji = $KanjiEdit.text
-		var kanji_item: KanjiItem = _kanji_list.get_item_by_real_index(_editing_real_index)
+		var kana: String = $KanaEdit.text
+		var kana_item: KanaItem = _kana_list.get_item_by_real_index(_editing_real_index)
 		assert(_strokes.size() > 0)
 		print("before", _strokes.size())
 		var base64_draw_data = PracticeDB.encode_all_strokes(_strokes)
@@ -88,25 +86,23 @@ func _on_redraw_pressed() -> void:
 		assert(check.size() == _strokes.size())
 		print("after", check.size())
 
-		kanji_item.draw_data = base64_draw_data
-		print(PracticeDB.kanji[kanji])
-		print(typeof(PracticeDB.kanji[kanji]), PracticeDB.kanji[kanji])
-		if "draw_data" not in PracticeDB.kanji[kanji]:
-			PracticeDB.kanji[kanji] = {
+		kana_item.draw_data = base64_draw_data
+		print(PracticeDB.kana[kana])
+		print(typeof(PracticeDB.kana[kana]), PracticeDB.kana[kana])
+		if "draw_data" not in PracticeDB.kana[kana]:
+			PracticeDB.kana[kana] = {
 				"draw_data": ""
 			}
-		PracticeDB.kanji[kanji].draw_data = kanji_item.draw_data
-		#kanji_item.draw_data = _strokes
-		#PracticeDB.kanji[kanji].draw_data = kanji_item.draw_data
-		_kanji_list.apply_filter()
+		PracticeDB.kana[kana].draw_data = kana_item.draw_data
+		_kana_list.apply_filter()
 		PracticeDB.db_changed.emit()
 
 		# if the edited item is on the filtered list, try to select it
-		_kanji_list.select_by_real_index(_editing_real_index)
+		_kana_list.select_by_real_index(_editing_real_index)
 
 		$Redraw.text = "Redraw"
 
-		if _kanji_list.is_visible_by_real_index(_editing_real_index):
+		if _kana_list.is_visible_by_real_index(_editing_real_index):
 			$Redraw.disabled = false
 			_draw_panel.enable()
 			_draw_panel.clear()
@@ -115,7 +111,7 @@ func _on_redraw_pressed() -> void:
 			_draw_panel.disable()
 			_editing_real_index = NONE
 
-		$Example.text = kanji
+		$Example.text = kana
 		$Example.visible = true
 		$Example.modulate = Color(255, 255, 255, 1)
 
@@ -124,15 +120,16 @@ func _on_redraw_pressed() -> void:
 		_draw_panel.enable()
 		_strokes = []
 		$Redraw.text = "Save"
-		$Example.text = $KanjiEdit.text
+		$Example.text = $KanaEdit.text
 		$Example.modulate = Color(255, 255, 255, 0.2)
 		$Example.visible = true
 
 
 
-func xxx_on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void:
-	print({"n":strokeIndex,"d":direction})
-	_strokes.append(direction)
+func _on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void:
+	#print({"n":strokeIndex,"d":direction})
+	#_strokes.append(direction)
+	pass
 
 
 func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
@@ -141,3 +138,5 @@ func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
 	var sig = StrokeUtils.process_stroke(points, 32, 0.02, true)
 	print("Appending stroke")
 	_strokes.append(sig)
+
+	pass # Replace with function body.
