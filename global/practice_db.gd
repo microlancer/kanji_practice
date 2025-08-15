@@ -373,15 +373,27 @@ func select_due(valid_words: Array) -> Dictionary:
 		#due_dates_by_word.append(sub_word2)
 
 	due_dates_by_word.sort_custom(_compare_words_due)
-	var due_seconds: int = 0
-	if due_dates_by_word[0].mastery_type == MasteryType.MASTERY_READ:
-		due_seconds = int(Time.get_unix_time_from_system() - due_dates_by_word[0].due)
+
+	# Randomly pick from all overdue, otherwise use first sorted value.
+
+	var all_overdue: Array = []
+	for word in due_dates_by_word:
+		if word.sec_remain <= 0:
+			all_overdue.append(word)
+
+	var selected_word: Dictionary = {}
+
+	if all_overdue.size() > 0:
+		selected_word = all_overdue.pick_random()
 	else:
-		due_seconds = int(Time.get_unix_time_from_system() - due_dates_by_word[0].due)
+		selected_word = due_dates_by_word[0]
+
+	var due_seconds: int = 0
+	due_seconds = int(Time.get_unix_time_from_system() - selected_word.due)
 
 	return {
-		"word": due_dates_by_word[0].word,
-		"mastery_type": due_dates_by_word[0].mastery_type,
+		"word": selected_word.word,
+		"mastery_type": selected_word.mastery_type,
 		"due_seconds": due_seconds
 	}
 
@@ -429,18 +441,31 @@ func get_due_dates_for_words(valid_words: Array) -> Array:
 
 		var now: int = int(Time.get_unix_time_from_system())
 
+		var sec_remain: int
+
+		if words[word].due_read == 0:
+			sec_remain = 0
+		else:
+			sec_remain = int(words[word].due_read) - now
+
 		var sub_word: Dictionary = {
 			"word": word,
 			"mastery_type": MasteryType.MASTERY_READ,
 			"due": int(words[word].due_read),
-			"sec_remain": int(words[word].due_read) - now
+			"sec_remain": sec_remain
 		}
 		due_dates_by_word.append(sub_word)
+
+		if words[word].due_write == 0:
+			sec_remain = 0
+		else:
+			sec_remain = int(words[word].due_write) - now
+
 		var sub_word2: Dictionary = {
 			"word": word,
 			"mastery_type": MasteryType.MASTERY_WRITE,
 			"due": int(words[word].due_write),
-			"sec_remain": int(words[word].due_write) - now
+			"sec_remain": sec_remain
 		}
 		due_dates_by_word.append(sub_word2)
 	return due_dates_by_word
