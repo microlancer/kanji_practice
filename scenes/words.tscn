@@ -69,16 +69,16 @@ offset_left = 24.0
 offset_top = 1176.0
 offset_right = 313.0
 offset_bottom = 1270.0
-text = "Mastery: Lv 1
-Next review in 32m"
+text = "Read: Level 1 (review in 3d 6h 18m 22s)
+Write: Level 2 (review in 7m 22s)"
 
 [node name="Reset" type="Button" parent="."]
 layout_mode = 0
-offset_left = 634.0
-offset_top = 1204.0
-offset_right = 981.0
-offset_bottom = 1282.0
-text = "Reset progress"
+offset_left = 343.0
+offset_top = 1328.0
+offset_right = 813.0
+offset_bottom = 1406.0
+text = "Reset mastery levels"
 
 [node name="Delete" type="Button" parent="."]
 layout_mode = 0

@@ -2,7 +2,10 @@ class_name WordItem
 extends FilterableListItem
 
 var word: String = ""
-var mastery: int = 0
+var mastery_read: int = 0
+var mastery_write: int = 0
+var due_read: int = 0
+var due_write: int = 0
 var furigana: String = ""
 var fills: Array = []
 

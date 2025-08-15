@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bes2f2dlre0pj"]
+[gd_scene load_steps=11 format=3 uid="uid://bes2f2dlre0pj"]
 
 [ext_resource type="Script" uid="uid://ciw76hlt2ogtq" path="res://scripts/study.gd" id="1_e7rny"]
 [ext_resource type="PackedScene" uid="uid://cvxd2f8dbnvbs" path="res://addons/godot_japanese_text/japanese_text.tscn" id="2_8q8l4"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/kanji-block2.png" id="3_xc6te"]
 [ext_resource type="AudioStream" uid="uid://dfw2ojhav7plk" path="res://assets/Fantasy_UI (4).wav" id="5_cjqim"]
 [ext_resource type="AudioStream" uid="uid://8c8cf4nqpt65" path="res://assets/Fantasy_UI (5).wav" id="6_rw6m0"]
+[ext_resource type="AudioStream" uid="uid://bylxwc6o1117b" path="res://assets/wind down 1.wav" id="7_gd3g7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8trg"]
 bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
@@ -21,6 +22,10 @@ corner_radius_bottom_left = 15
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cjqim"]
 texture = ExtResource("3_xc6te")
+
+[sub_resource type="LabelSettings" id="LabelSettings_gd3g7"]
+font_size = 40
+font_color = Color(1, 1, 1, 0.47451)
 
 [node name="Study" type="Control"]
 layout_mode = 3
@@ -66,6 +71,7 @@ offset_bottom = 1902.0
 text = "Next"
 
 [node name="Clear" type="Button" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 96.0
 offset_top = 1792.0
@@ -115,6 +121,18 @@ stream = ExtResource("5_cjqim")
 
 [node name="Sound2" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_rw6m0")
+
+[node name="Sound3" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_gd3g7")
+
+[node name="Due" type="Label" parent="."]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 112.0
+offset_right = 483.0
+offset_bottom = 182.0
+text = "0 due"
+label_settings = SubResource("LabelSettings_gd3g7")
 
 [connection signal="pressed" from="Edit" to="." method="_on_edit_pressed"]
 [connection signal="pressed" from="Next" to="." method="_on_next_pressed"]

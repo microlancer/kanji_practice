@@ -3,6 +3,8 @@ extends Node
 signal db_loaded
 signal db_changed
 
+enum MasteryType { MASTERY_READ, MASTERY_WRITE }
+
 var phrases: Array = []
 var fills: Dictionary = {}
 var words: Dictionary = {}
@@ -16,172 +18,6 @@ var filter_kanji: String = ""
 var filter_kana: String = ""
 
 var cloud_url: String = "https://microlancer.io/kanji/index.php?id=123"
-
-var _kana_draw_data: Dictionary = {
-	"あ": ["R","D","DR"],
-	"い": ["D","D"],
-	"う": ["R","DR"],
-	"え": ["R","DR"],
-	"お": ["R","DR","DR"],
-	"か": ["DR","DL","DR"],
-	"き": ["R","R","DR","DR"],
-	"く": ["D"],
-	"け": ["D","R","D"],
-	"こ": ["R","R"],
-	"さ": ["R","D","R"],
-	"し": ["DR"],
-	"す": ["R","D"],
-	"せ": ["R","R","DR"],
-	"そ": ["D"],
-	"た": ["R","D","R","R"],
-	"ち": ["R","DR"],
-	"つ": ["DR"],
-	"て": ["DR"],
-	"と": ["DR","D"],
-	"な": ["R","DL","DR","DR"],
-	"に": ["D","R","R"],
-	"ぬ": ["DR","DR"],
-	"ね": ["D","DR"],
-	"の": ["DR"],
-	"は": ["D","R","DR"],
-	"ひ": ["DR"],
-	"ふ": ["DR","DL","DR","D"],
-	"へ": ["R"],
-	"ほ": ["D","R","R","DR"],
-	"ま": ["R","R","DR"],
-	"み": ["DR","DL"],
-	"む": ["R","DR","DR"],
-	"め": ["DR","DR"],
-	"も": [],
-	"や": [],
-	"ゆ": [],
-	"よ": [],
-	"ら": [],
-	"り": [],
-	"る": ["DR"],
-	"れ": ["D","DR"],
-	"ろ": [],
-	"わ": ["D","DR"],
-	"を": [],
-	"ん": ["DR"],
-	"が": [],
-	"ぎ": [],
-	"ぐ": [],
-	"げ": [],
-	"ご": [],
-	"ざ": [],
-	"じ": [],
-	"ず": [],
-	"ぜ": ["R", "D", "DR", "DR", "DR"],
-	"ぞ": [],
-	"だ": [],
-	"ぢ": [],
-	"づ": [],
-	"で": [],
-	"ど": [],
-	"ば": ["D","R","DR","DR","DR"],
-	"び": [],
-	"ぶ": ["R","D","DL","DR","DR","DR"],
-	"べ": ["R","DR","DR"],
-	"ぼ": [],
-	"ぱ": [],
-	"ぴ": [],
-	"ぷ": [],
-	"ぺ": [],
-	"ぽ": [],
-	"っ": [],
-	"ゃ": [],
-	"ゅ": [],
-	"ょ": [],
-	"ぁ": [],
-	"ぃ": [],
-	"ぇ": [],
-	"ぉ": [],
-	"ゐ": [],
-	"ゑ": [],
-	# Katakana
-	"ア": [],
-	"イ": [],
-	"ウ": [],
-	"エ": [],
-	"オ": [],
-	"カ": [],
-	"キ": [],
-	"ク": [],
-	"ケ": [],
-	"コ": [],
-	"サ": [],
-	"シ": [],
-	"ス": [],
-	"セ": [],
-	"ソ": [],
-	"タ": [],
-	"チ": [],
-	"ツ": [],
-	"テ": [],
-	"ト": [],
-	"ナ": [],
-	"ニ": [],
-	"ヌ": [],
-	"ネ": [],
-	"ノ": [],
-	"ハ": [],
-	"ヒ": [],
-	"フ": [],
-	"ヘ": [],
-	"ホ": [],
-	"マ": [],
-	"ミ": [],
-	"ム": [],
-	"メ": [],
-	"モ": [],
-	"ヤ": [],
-	"ユ": [],
-	"ヨ": [],
-	"ラ": [],
-	"リ": [],
-	"ル": [],
-	"レ": [],
-	"ロ": [],
-	"ワ": [],
-	"ヲ": [],
-	"ン": [],
-	"ガ": [],
-	"ギ": [],
-	"グ": [],
-	"ゲ": [],
-	"ゴ": [],
-	"ザ": [],
-	"ジ": [],
-	"ズ": [],
-	"ゼ": [],
-	"ゾ": [],
-	"ダ": [],
-	"ヂ": [],
-	"ヅ": [],
-	"デ": [],
-	"ド": [],
-	"バ": [],
-	"ビ": [],
-	"ブ": [],
-	"ベ": [],
-	"ボ": [],
-	"パ": [],
-	"ピ": [],
-	"プ": [],
-	"ペ": [],
-	"ポ": [],
-	"ッ": [],
-	"ャ": [],
-	"ュ": [],
-	"ョ": [],
-	"ァ": [],
-	"ィ": [],
-	"ェ": [],
-	"ォ": [],
-	"ヰ": [],
-	"ヱ": []
-}
 
 func _ready() -> void:
 	print("loading from " + cloud_url)
@@ -317,7 +153,7 @@ func _on_post_completed(result, response_code, _headers, body):
 	if result == OK and response_code == 200:
 		var text: String = body.get_string_from_utf8()
 		print_rich("Body length: " + str(text.length()))
-		print("Body: " + text)
+		#print("Body: " + text)
 	else:
 		print(body.get_string_from_utf8())
 		print("Request failed.")
@@ -328,7 +164,7 @@ func _on_get_completed(result, response_code, _headers, body):
 
 	if result == OK and response_code == 200:
 		var text = body.get_string_from_utf8()
-		print("Body: ", text)
+		#print("Body: ", text)
 		set_db_from_json_string(text)
 	else:
 		print("Request failed.")
@@ -408,23 +244,226 @@ func encode_all_strokes(all_strokes: Array) -> String:
 	return base64
 	#return compressed.to_base64()
 
-func decode_all_strokes(base64: String, original_size: int) -> Array:
+func decode_all_strokes(base64: String) -> Array:
 	print("base64-len: " + str(base64.length()))
 	if base64 == "":
 		print("No string to decode")
 		return []
-	#var was_compressed: bool = false
 	var uncompressed: PackedByteArray = Marshalls.base64_to_raw(base64)
-	#if was_compressed:
-		#var compressed: PackedByteArray = Marshalls.base64_to_raw(base64)
-		#print("compressed-len: " + str(compressed.size()))
-		#uncompressed = compressed.decompress(original_size, FileAccess.COMPRESSION_ZSTD)
-		#print("uncompressed-len: " + str(uncompressed.size()))
-		#if not uncompressed:
-			#print("Unable to decompress: " + str(uncompressed.size()))
-			#return []
 	var all_strokes: Variant = bytes_to_var(uncompressed)
 	if all_strokes == null:
 		print("Unable to convert bytes to var: " + str(base64.length))
 		return []
 	return all_strokes
+
+func get_valid_data() -> Dictionary:
+	var valid_phrases: Array = []
+	var valid_fills: Dictionary = {} # same fill can be in many phrases
+	var valid_words: Dictionary = {} # same word can be in many fills
+	for phrase in phrases:
+		var extracted_fills: Array = extract_fills(phrase)
+		var is_valid_phrase: bool = true
+		var valid_words_for_phrase: Array = []
+		var valid_fills_for_phrase: Array = []
+		for fill in extracted_fills:
+			if fill not in fills:
+				is_valid_phrase = false
+				break
+			var extracted_words: Array = fills[fill].words
+			for word in extracted_words:
+				if JapaneseText.has_kanji(word):
+					if word not in words:
+						is_valid_phrase = false
+						break
+					elif words[word].furigana == "":
+						is_valid_phrase = false
+						break
+				else:
+					# No kanji in word, skip to next word
+					continue
+				var extracted_kanji: Array = get_kanji_array(word)
+				for k in extracted_kanji:
+					if k not in kanji:
+						is_valid_phrase = false
+						break
+					elif kanji[k].draw_data == "":
+						is_valid_phrase = false
+						break
+				valid_words_for_phrase.append(word)
+			valid_fills_for_phrase.append(fill)
+		if is_valid_phrase:
+			valid_phrases.append(phrase)
+			for word in valid_words_for_phrase:
+				valid_words[word] = true
+			for fill in valid_fills_for_phrase:
+				valid_fills[fill] = true
+	return {
+		"phrases": valid_phrases,
+		"fills": valid_fills.keys(),
+		"words": valid_words.keys()
+	}
+
+func increment_mastery_for_word(word: String, type: MasteryType) -> void:
+	if "mastery_read" not in PracticeDB.words[word]:
+		words[word]["mastery_read"] = 0
+		words[word]["mastery_write"] = 0
+
+	if type == MasteryType.MASTERY_READ:
+		words[word].mastery_read += 1
+		var add_seconds: int = int(pow(2, words[word].mastery_read))
+		print("Setting read mastery for word " + word + " to be due in " +\
+			str(add_seconds) + " seconds at level " + str(words[word].mastery_read))
+		words[word].due_read = int(Time.get_unix_time_from_system()) +\
+			add_seconds
+	else:
+		words[word].mastery_write += 1
+		var add_seconds: int = int(pow(2, words[word].mastery_write))
+		print("Setting write mastery for word " + word + " to be due in " +\
+			str(add_seconds) + " seconds at level " + str(words[word].mastery_write))
+		words[word].due_write = int(Time.get_unix_time_from_system()) +\
+			add_seconds
+
+	save_to_cloud()
+
+func reset_mastery_for_word(word: String, type: MasteryType) -> void:
+	if "mastery_read" not in PracticeDB.words[word]:
+		words[word]["mastery_read"] = 0
+		words[word]["mastery_write"] = 0
+
+	if type == MasteryType.MASTERY_READ:
+		words[word].mastery_read = 0
+		var add_seconds: int = int(pow(2, words[word].mastery_read))
+		print("Setting read mastery for word " + word + " to be due in " +\
+			str(add_seconds) + " seconds at level " + str(words[word].mastery_read))
+		words[word].due_read = int(Time.get_unix_time_from_system()) +\
+			add_seconds
+	else:
+		words[word].mastery_write = 0
+		var add_seconds: int = int(pow(2, words[word].mastery_write))
+		print("Setting write mastery for word " + word + " to be due in " +\
+			str(add_seconds) + " seconds at level " + str(words[word].mastery_write))
+		words[word].due_write = int(Time.get_unix_time_from_system()) +\
+			add_seconds
+
+	save_to_cloud()
+
+func select_due(valid_words: Array) -> Dictionary:
+	var due_dates_by_word: Array = get_due_dates_for_words(valid_words)
+	#for word in valid_words:
+#
+		#if "due_read" not in words[word]:
+			#words[word]["due_read"] = 0
+			#words[word]["due_write"] = 0
+#
+		#var now = Time.get_unix_time_from_system()
+#
+		#var sub_word: Dictionary = {
+			#"word": word,
+			#"mastery_type": MasteryType.MASTERY_READ,
+			#"due": int(words[word].due_read),
+			#"sec_remain": int(words[word].due_read - now)
+		#}
+		#due_dates_by_word.append(sub_word)
+		#var sub_word2: Dictionary = {
+			#"word": word,
+			#"mastery_type": MasteryType.MASTERY_WRITE,
+			#"due": int(words[word].due_write),
+			#"sec_remain": int(words[word].due_write - now)
+		#}
+		#due_dates_by_word.append(sub_word2)
+
+	due_dates_by_word.sort_custom(_compare_words_due)
+	var due_seconds: int = 0
+	if due_dates_by_word[0].mastery_type == MasteryType.MASTERY_READ:
+		due_seconds = int(Time.get_unix_time_from_system() - due_dates_by_word[0].due)
+	else:
+		due_seconds = int(Time.get_unix_time_from_system() - due_dates_by_word[0].due)
+
+	return {
+		"word": due_dates_by_word[0].word,
+		"mastery_type": due_dates_by_word[0].mastery_type,
+		"due_seconds": due_seconds
+	}
+
+func _compare_words_due(a: Dictionary, b: Dictionary) -> bool:
+	if a.due < b.due:
+		return true
+	return false
+
+func sec_to_remain(seconds: int) -> String:
+	var days: int = int(float(seconds) / 86400)
+	seconds = seconds % 86400
+	var hours: int = int(float(seconds) / 3600)
+	seconds = seconds % 3600
+	var minutes: int = int(float(seconds) / 60)
+	seconds = seconds % 60
+
+	var parts := []
+	if days > 0:
+		parts.append(str(days) + "d")
+	if hours > 0:
+		parts.append(str(hours) + "h")
+	if minutes > 0:
+		parts.append(str(minutes) + "m")
+	if seconds > 0 or parts.is_empty():
+		parts.append(str(seconds) + "s")
+
+	return " ".join(parts)
+
+func get_due_count(valid_words: Array) -> int:
+
+	var due_words = get_due_dates_for_words(valid_words)
+	var count: int = 0
+	for word in due_words:
+		if word.sec_remain <= 0:
+			count += 1
+	return count
+
+func get_due_dates_for_words(valid_words: Array) -> Array:
+	var due_dates_by_word: Array = []
+	for word in valid_words:
+
+		if "due_read" not in words[word]:
+			words[word]["due_read"] = 0
+			words[word]["due_write"] = 0
+
+		var now: int = int(Time.get_unix_time_from_system())
+
+		var sub_word: Dictionary = {
+			"word": word,
+			"mastery_type": MasteryType.MASTERY_READ,
+			"due": int(words[word].due_read),
+			"sec_remain": int(words[word].due_read) - now
+		}
+		due_dates_by_word.append(sub_word)
+		var sub_word2: Dictionary = {
+			"word": word,
+			"mastery_type": MasteryType.MASTERY_WRITE,
+			"due": int(words[word].due_write),
+			"sec_remain": int(words[word].due_write) - now
+		}
+		due_dates_by_word.append(sub_word2)
+	return due_dates_by_word
+
+
+func postpone_due_for_word(word: String, type: MasteryType) -> void:
+	if "mastery_read" not in PracticeDB.words[word]:
+		words[word]["mastery_read"] = 0
+		words[word]["mastery_write"] = 0
+
+	if type == MasteryType.MASTERY_READ:
+		#words[word].mastery_read += 1
+		var add_seconds: int = int(pow(2, words[word].mastery_read))
+		print("Postponing read mastery for word " + word + " to be due in " +\
+			str(add_seconds) + " seconds at level " + str(words[word].mastery_read))
+		words[word].due_read = int(Time.get_unix_time_from_system()) +\
+			add_seconds
+	else:
+		#words[word].mastery_write += 1
+		var add_seconds: int = int(pow(2, words[word].mastery_write))
+		print("Postponing write mastery for word " + word + " to be due in " +\
+			str(add_seconds) + " seconds at level " + str(words[word].mastery_write))
+		words[word].due_write = int(Time.get_unix_time_from_system()) +\
+			add_seconds
+
+	save_to_cloud()

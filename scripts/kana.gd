@@ -23,7 +23,7 @@ func init_from_db() -> void:
 	var all_kana: Array[FilterableListItem] = []
 
 	for kana in PracticeDB.kana:
-		print(kana)
+		#print(kana)
 		var kana_item: KanaItem = KanaItem.new()
 		kana_item.text = kana
 		if "draw_data" not in PracticeDB.kana[kana]:
@@ -33,7 +33,7 @@ func init_from_db() -> void:
 		kana_item.draw_data = PracticeDB.kana[kana].draw_data
 		all_kana.append(kana_item)
 
-	print(all_kana)
+	#print(all_kana)
 
 	_kana_list.init_all_items(all_kana)
 	init_filter()
@@ -82,13 +82,13 @@ func _on_redraw_pressed() -> void:
 		print("before", _strokes.size())
 		var base64_draw_data = PracticeDB.encode_all_strokes(_strokes)
 
-		var check: Array = PracticeDB.decode_all_strokes(base64_draw_data, -1)
+		var check: Array = PracticeDB.decode_all_strokes(base64_draw_data)
 		assert(check.size() == _strokes.size())
 		print("after", check.size())
 
 		kana_item.draw_data = base64_draw_data
-		print(PracticeDB.kana[kana])
-		print(typeof(PracticeDB.kana[kana]), PracticeDB.kana[kana])
+		#print(PracticeDB.kana[kana])
+		#print(typeof(PracticeDB.kana[kana]), PracticeDB.kana[kana])
 		if "draw_data" not in PracticeDB.kana[kana]:
 			PracticeDB.kana[kana] = {
 				"draw_data": ""
@@ -126,14 +126,10 @@ func _on_redraw_pressed() -> void:
 
 
 
-func _on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void:
-	#print({"n":strokeIndex,"d":direction})
-	#_strokes.append(direction)
-	pass
-
 
 func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
-	print({"points":points})
+	#print({"points":points})
+	print({"strokeIndex":strokeIndex})
 	# Convert raw points to signature
 	var sig = StrokeUtils.process_stroke(points, 32, 0.02, true)
 	print("Appending stroke")

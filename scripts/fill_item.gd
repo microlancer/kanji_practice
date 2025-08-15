@@ -23,7 +23,8 @@ func is_valid() -> bool:
 		if word in PracticeDB.words:
 			var word_item: WordItem = WordItem.new()
 			word_item.fills = []
-			word_item.mastery = 0
+			word_item.mastery_read = 0
+			word_item.mastery_write = 0
 			word_item.word = word
 			word_item.furigana = PracticeDB.words[word].furigana
 			if not word_item.is_valid():

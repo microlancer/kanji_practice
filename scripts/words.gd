@@ -4,6 +4,7 @@ signal jump_to_kanji
 
 @onready var _words_list: FilterableList = $FilterableList
 
+
 const NONE = -1
 
 var _editing_real_index: int = NONE
@@ -11,6 +12,7 @@ var _editing_original_word: String = ""
 
 func _ready() -> void:
 
+	$MasteryLabel.text = ""
 	_words_list.item_selected.connect(_on_item_selected)
 	_words_list.filter_changed.connect(_on_filter_changed)
 
@@ -25,9 +27,20 @@ func init_from_db() -> void:
 	for word in PracticeDB.words:
 		var word_item: WordItem = WordItem.new()
 		word_item.word = word
-		word_item.furigana = PracticeDB.words[word].furigana
-		word_item.mastery = PracticeDB.words[word].mastery
-		word_item.fills = PracticeDB.words[word].fills
+		var db_word: Dictionary = PracticeDB.words[word]
+		word_item.furigana = db_word.furigana
+
+		if "due_read" not in PracticeDB.words[word]:
+			PracticeDB.words[word]["mastery_read"] = 0
+			PracticeDB.words[word]["mastery_write"] = 0
+			PracticeDB.words[word]["due_read"] = 0
+			PracticeDB.words[word]["due_write"] = 0
+
+		word_item.mastery_read = int(db_word.mastery_read)
+		word_item.mastery_write = int(db_word.mastery_write)
+		word_item.due_read = int(db_word.due_read)
+		word_item.due_write = int(db_word.due_write)
+		word_item.fills = db_word.fills
 		all_words.append(word_item)
 
 	_words_list.init_all_items(all_words)
@@ -43,6 +56,7 @@ func init_filter() -> void:
 	$Delete.visible = false
 	$WordEdit.text = ""
 	$FuriganaEdit.text = ""
+	$MasteryLabel.text = ""
 
 	if _words_list.filter_edit.text != "":
 		_words_list.select_by_visible_index(0)
@@ -54,6 +68,31 @@ func _on_item_selected(item: FilterableListItem) -> void:
 
 	_editing_real_index = word_item.real_index
 	_editing_original_word = word_item.word
+
+	# it is possible that the DB was updated (by study) so use the latest
+	var mastery_read = int(PracticeDB.words[word_item.word].mastery_read)
+	var mastery_write = int(PracticeDB.words[word_item.word].mastery_write)
+
+	var sec_read_remain: int = int(PracticeDB.words[word_item.word].due_read) -\
+		int(Time.get_unix_time_from_system())
+	var sec_write_remain: int = int(PracticeDB.words[word_item.word].due_write) -\
+		int(Time.get_unix_time_from_system())
+
+	var read_review_time_remaining: String = "review in " +\
+		PracticeDB.sec_to_remain(sec_read_remain)
+	var write_review_time_remaining: String = "review in " +\
+		PracticeDB.sec_to_remain(sec_write_remain)
+
+	if mastery_read == 0 or sec_read_remain <= 0:
+		read_review_time_remaining = "due now"
+
+	if mastery_write == 0 or sec_write_remain <= 0:
+		write_review_time_remaining = "due now"
+
+	$MasteryLabel.text = "Read: Level " + str(mastery_read) + " (" +\
+		read_review_time_remaining + ")\n" +\
+		"Write: Level " + str(mastery_write) + " (" +\
+		write_review_time_remaining + ")"
 
 	$WordEdit.text = word_item.word
 	$FuriganaEdit.text = word_item.furigana
@@ -79,10 +118,14 @@ func _on_filter_changed(filter: String) -> void:
 func _on_save_pressed() -> void:
 	var word = $WordEdit.text
 	var furigana = $FuriganaEdit.text
-	var mastery = 0 # TODO
+
 
 	if word == "" or furigana == "":
 		return
+
+
+	var mastery_read = PracticeDB.words[word].mastery_read
+	var mastery_write = PracticeDB.words[word].mastery_write
 
 	if not JapaneseText.has_kanji(word):
 		button_error($Save, "Kanji required in word")
@@ -94,9 +137,9 @@ func _on_save_pressed() -> void:
 			button_error($Save, "Word already exists")
 			return
 
-		_save_new_word(word, furigana, mastery)
+		_save_new_word(word, furigana, mastery_read, mastery_write)
 	else:
-		_update_existing_word(word, furigana, mastery)
+		_update_existing_word(word, furigana, mastery_read, mastery_write)
 
 	#var word_item: Dictionary = PracticeDB.words[word]
 
@@ -121,7 +164,7 @@ func _on_save_pressed() -> void:
 
 	PracticeDB.db_changed.emit()
 
-func _save_new_word(word: String, furigana: String, mastery: int) -> void:
+func _save_new_word(word: String, furigana: String, mastery_read: int, mastery_write: int) -> void:
 	#$Save.text = "Added!"
 	var new_word: WordItem = WordItem.new()
 	new_word.word = word
@@ -130,11 +173,12 @@ func _save_new_word(word: String, furigana: String, mastery: int) -> void:
 
 	PracticeDB.words[word] = {
 		"furigana": furigana,
-		"mastery": mastery, # TODO
+		"mastery_read": mastery_read,
+		"mastery_write": mastery_write,
 		"fills": [] # TODO
 	}
 
-func _update_existing_word(word: String, furigana: String, mastery: int) -> void:
+func _update_existing_word(word: String, furigana: String, mastery_read: int, mastery_write: int) -> void:
 	#$Save.text = "Updated!"
 	if word != _editing_original_word:
 		# Word was changed, erase old word
@@ -143,18 +187,21 @@ func _update_existing_word(word: String, furigana: String, mastery: int) -> void
 		#_item_index_to_string[data.real_index] = item_name
 		PracticeDB.words[word] = {
 			"furigana": furigana,
-			"mastery": mastery, # TODO
+			"mastery_read": mastery_read,
+			"mastery_write": mastery_write,
 			"fills": [] # TODO
 		}
 		#replace_list.all_items_metadata[data.real_index] = {"name": item_name, "real_index": data.real_index}
 
 	PracticeDB.words[word].furigana = furigana
-	PracticeDB.words[word].mastery = mastery
+	PracticeDB.words[word].mastery_read = mastery_read
+	PracticeDB.words[word].mastery_write = mastery_write
 	PracticeDB.words[word].fills = [] # TODO
 	var word_item: WordItem = _words_list.get_item_by_real_index(_editing_real_index)
 	word_item.word = word
 	word_item.furigana = furigana
-	word_item.mastery = mastery
+	word_item.mastery_read = mastery_read
+	word_item.mastery_write = mastery_write
 	word_item.fills = [] # TODO
 	_words_list.apply_filter()
 
@@ -171,6 +218,8 @@ func _on_new_pressed() -> void:
 	$Save.disabled = true
 	$Kanji.visible = false
 	$Delete.visible = false
+	$MasteryLabel.text = ""
+	$Reset.visible = false
 
 func _on_kanji_pressed() -> void:
 	print({"_editing_original_word":_editing_original_word})
@@ -178,7 +227,7 @@ func _on_kanji_pressed() -> void:
 	var kanji_array: Array = PracticeDB.get_kanji_array(_editing_original_word)
 	_create_kanji_if_missing(kanji_array)
 	PracticeDB.filter_kanji = "|".join(kanji_array)
-	print(kanji_array)
+	#print(kanji_array)
 	jump_to_kanji.emit()
 
 #func _get_kanji_array(word: String) -> Array:

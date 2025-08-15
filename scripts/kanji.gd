@@ -23,7 +23,7 @@ func init_from_db() -> void:
 	var all_kanji: Array[FilterableListItem] = []
 
 	for kanji in PracticeDB.kanji:
-		print(kanji)
+		#print(kanji)
 		var kanji_item: KanjiItem = KanjiItem.new()
 		kanji_item.text = kanji
 		if "draw_data" not in PracticeDB.kanji[kanji] or \
@@ -31,11 +31,11 @@ func init_from_db() -> void:
 			PracticeDB.kanji[kanji] = {
 				"draw_data": ""
 			}
-		print(PracticeDB.kanji[kanji].draw_data)
+		#print(PracticeDB.kanji[kanji].draw_data)
 		kanji_item.draw_data = PracticeDB.kanji[kanji].draw_data
 		all_kanji.append(kanji_item)
 
-	print(all_kanji)
+	#print(all_kanji)
 
 	_kanji_list.init_all_items(all_kanji)
 	init_filter()
@@ -84,13 +84,13 @@ func _on_redraw_pressed() -> void:
 		print("before", _strokes.size())
 		var base64_draw_data = PracticeDB.encode_all_strokes(_strokes)
 
-		var check: Array = PracticeDB.decode_all_strokes(base64_draw_data, -1)
+		var check: Array = PracticeDB.decode_all_strokes(base64_draw_data)
 		assert(check.size() == _strokes.size())
 		print("after", check.size())
 
 		kanji_item.draw_data = base64_draw_data
-		print(PracticeDB.kanji[kanji])
-		print(typeof(PracticeDB.kanji[kanji]), PracticeDB.kanji[kanji])
+		#print(PracticeDB.kanji[kanji])
+		#print(typeof(PracticeDB.kanji[kanji]), PracticeDB.kanji[kanji])
 		if "draw_data" not in PracticeDB.kanji[kanji]:
 			PracticeDB.kanji[kanji] = {
 				"draw_data": ""
@@ -128,15 +128,8 @@ func _on_redraw_pressed() -> void:
 		$Example.modulate = Color(255, 255, 255, 0.2)
 		$Example.visible = true
 
-
-
-func xxx_on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void:
-	print({"n":strokeIndex,"d":direction})
-	_strokes.append(direction)
-
-
 func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
-	print({"points":points})
+	print({"strokeIndex": strokeIndex, "points.size":points.size()})
 	# Convert raw points to signature
 	var sig = StrokeUtils.process_stroke(points, 32, 0.02, true)
 	print("Appending stroke")

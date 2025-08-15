@@ -57,7 +57,7 @@ func apply_filter() -> void:
 				"real_index": real_index
 			})
 			item.visible_index = visible_index
-			print("Set visible index to: " + str(visible_index))
+			#print("Set visible index to: " + str(visible_index))
 			item.real_index = real_index
 			#if all_items_metadata.size() > 0:
 			#	print("Setting metadata at " + str(index) + " to " + all_items_metadata[index].name)
