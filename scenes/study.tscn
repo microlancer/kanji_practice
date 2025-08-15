@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bes2f2dlre0pj"]
+[gd_scene load_steps=12 format=3 uid="uid://bes2f2dlre0pj"]
 
 [ext_resource type="Script" uid="uid://ciw76hlt2ogtq" path="res://scripts/study.gd" id="1_e7rny"]
 [ext_resource type="PackedScene" uid="uid://cvxd2f8dbnvbs" path="res://addons/godot_japanese_text/japanese_text.tscn" id="2_8q8l4"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://dfw2ojhav7plk" path="res://assets/Fantasy_UI (4).wav" id="5_cjqim"]
 [ext_resource type="AudioStream" uid="uid://8c8cf4nqpt65" path="res://assets/Fantasy_UI (5).wav" id="6_rw6m0"]
 [ext_resource type="AudioStream" uid="uid://bylxwc6o1117b" path="res://assets/wind down 1.wav" id="7_gd3g7"]
+[ext_resource type="AudioStream" uid="uid://dxyc0xwhy41gw" path="res://assets/Piano_Ui (2).wav" id="8_8iu3m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8trg"]
 bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
@@ -125,6 +126,9 @@ stream = ExtResource("6_rw6m0")
 [node name="Sound3" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_gd3g7")
 
+[node name="Sound4" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_8iu3m")
+
 [node name="Due" type="Label" parent="."]
 layout_mode = 0
 offset_left = 88.0
@@ -133,6 +137,16 @@ offset_right = 483.0
 offset_bottom = 182.0
 text = "0 due"
 label_settings = SubResource("LabelSettings_gd3g7")
+
+[node name="Version" type="Label" parent="."]
+self_modulate = Color(0.325441, 0.325441, 0.325441, 1)
+z_index = -1
+layout_mode = 0
+offset_left = 24.0
+offset_top = 1824.0
+offset_right = 328.0
+offset_bottom = 1894.0
+text = "Version 1.0.0"
 
 [connection signal="pressed" from="Edit" to="." method="_on_edit_pressed"]
 [connection signal="pressed" from="Next" to="." method="_on_next_pressed"]

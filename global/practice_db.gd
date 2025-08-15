@@ -164,6 +164,7 @@ func _on_get_completed(result, response_code, _headers, body):
 
 	if result == OK and response_code == 200:
 		var text = body.get_string_from_utf8()
+		print_rich("Body length: " + str(text.length()))
 		#print("Body: ", text)
 		set_db_from_json_string(text)
 	else:
@@ -171,6 +172,10 @@ func _on_get_completed(result, response_code, _headers, body):
 
 func set_db_from_json_string(text: String) -> void:
 	var data = JSON.parse_string(text)
+	if data == null:
+		print("Unable to parse JSON string")
+		assert(false, "Unable to parse JSON string")
+		return
 	phrases = data.phrases
 	fills = data.fills
 	words = data.words
@@ -303,6 +308,9 @@ func get_valid_data() -> Dictionary:
 		"words": valid_words.keys()
 	}
 
+func _get_add_seconds(level: int) -> int:
+	return 60 * level + int(pow(2, level))
+
 func increment_mastery_for_word(word: String, type: MasteryType) -> void:
 	if "mastery_read" not in PracticeDB.words[word]:
 		words[word]["mastery_read"] = 0
@@ -310,14 +318,14 @@ func increment_mastery_for_word(word: String, type: MasteryType) -> void:
 
 	if type == MasteryType.MASTERY_READ:
 		words[word].mastery_read += 1
-		var add_seconds: int = int(pow(2, words[word].mastery_read))
+		var add_seconds: int = _get_add_seconds(words[word].mastery_read)
 		print("Setting read mastery for word " + word + " to be due in " +\
 			str(add_seconds) + " seconds at level " + str(words[word].mastery_read))
 		words[word].due_read = int(Time.get_unix_time_from_system()) +\
 			add_seconds
 	else:
 		words[word].mastery_write += 1
-		var add_seconds: int = int(pow(2, words[word].mastery_write))
+		var add_seconds: int = _get_add_seconds(words[word].mastery_write)
 		print("Setting write mastery for word " + word + " to be due in " +\
 			str(add_seconds) + " seconds at level " + str(words[word].mastery_write))
 		words[word].due_write = int(Time.get_unix_time_from_system()) +\
@@ -332,14 +340,14 @@ func reset_mastery_for_word(word: String, type: MasteryType) -> void:
 
 	if type == MasteryType.MASTERY_READ:
 		words[word].mastery_read = 0
-		var add_seconds: int = int(pow(2, words[word].mastery_read))
+		var add_seconds: int = _get_add_seconds(words[word].mastery_read)
 		print("Setting read mastery for word " + word + " to be due in " +\
 			str(add_seconds) + " seconds at level " + str(words[word].mastery_read))
 		words[word].due_read = int(Time.get_unix_time_from_system()) +\
 			add_seconds
 	else:
 		words[word].mastery_write = 0
-		var add_seconds: int = int(pow(2, words[word].mastery_write))
+		var add_seconds: int = _get_add_seconds(words[word].mastery_write)
 		print("Setting write mastery for word " + word + " to be due in " +\
 			str(add_seconds) + " seconds at level " + str(words[word].mastery_write))
 		words[word].due_write = int(Time.get_unix_time_from_system()) +\

@@ -31,6 +31,11 @@ func _ready() -> void:
 	PracticeDB.db_loaded.connect(_on_db_loaded)
 
 	$Answer.text = ""
+	$TryAgain.visible = false
+	$ShowAnswer.visible = false
+	$Next.visible = false
+
+	$Version.text = "v" + ProjectSettings.get_setting("application/config/version")
 
 
 
@@ -56,7 +61,8 @@ func _on_check_due_timer() -> void:
 		_check_due_timer.start()
 		return
 
-
+	print("Found due")
+	$Sound4.play()
 
 	_start_study()
 

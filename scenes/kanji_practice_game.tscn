@@ -28,14 +28,15 @@ offset_right = -8.0
 offset_bottom = 102.0
 grow_horizontal = 2
 current_tab = 0
+scrolling_enabled = false
 tab_count = 7
-tab_0/title = "Practice"
+tab_0/title = "Study"
 tab_1/title = "Phrases"
 tab_2/title = "Fills"
 tab_3/title = "Words"
 tab_4/title = "Kanji"
-tab_5/title = "C"
-tab_6/title = "Options"
+tab_5/title = "Kana"
+tab_6/title = "Opts"
 
 [node name="Study" parent="TabBar" instance=ExtResource("2_6ygm7")]
 
