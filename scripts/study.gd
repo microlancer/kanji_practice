@@ -394,7 +394,14 @@ func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
 	var similarity: float = StrokeUtils.compare_strokes2(reference_sig, sig, true, 0.25)
 	print("Comparing signatures, similarity: " + str(similarity))
 	# compare_strokes returns a 0.0 (identical) to 1.0 (max difference) range
-	if similarity < 0.6:
+
+	var max_allowed_difference: float = 0.0
+	if JapaneseText.is_kanji(_expected_word[_char_index]):
+		max_allowed_difference = 0.6
+	else:
+		max_allowed_difference = 0.8
+
+	if similarity < max_allowed_difference:
 		print("Stroke is a match")
 		# correct
 		if strokeIndex == _expected_strokes[_char_index].size() - 1:

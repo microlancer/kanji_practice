@@ -312,20 +312,39 @@ func _get_add_seconds(level: int) -> int:
 	return 60 * level + int(pow(2, level))
 
 func increment_mastery_for_word(word: String, type: MasteryType) -> void:
-	if "mastery_read" not in PracticeDB.words[word]:
+	if "mastery_read" not in words[word]:
 		words[word]["mastery_read"] = 0
 		words[word]["mastery_write"] = 0
 
 	if type == MasteryType.MASTERY_READ:
+
 		words[word].mastery_read += 1
+
+		# check if due_read is more than 1 mastery level away
+		var due_seconds: int = int(Time.get_unix_time_from_system()) - words[word].due_read
 		var add_seconds: int = _get_add_seconds(words[word].mastery_read)
+
+		while due_seconds > add_seconds:
+			due_seconds -= add_seconds
+			words[word].mastery_read += 1
+			add_seconds = _get_add_seconds(words[word].mastery_read)
+
 		print("Setting read mastery for word " + word + " to be due in " +\
 			str(add_seconds) + " seconds at level " + str(words[word].mastery_read))
 		words[word].due_read = int(Time.get_unix_time_from_system()) +\
 			add_seconds
 	else:
 		words[word].mastery_write += 1
+
+		# check if due_read is more than 1 mastery level away
+		var due_seconds: int = int(Time.get_unix_time_from_system()) - words[word].due_read
 		var add_seconds: int = _get_add_seconds(words[word].mastery_write)
+
+		while due_seconds > add_seconds:
+			due_seconds -= add_seconds
+			words[word].mastery_write += 1
+			add_seconds = _get_add_seconds(words[word].mastery_write)
+
 		print("Setting write mastery for word " + word + " to be due in " +\
 			str(add_seconds) + " seconds at level " + str(words[word].mastery_write))
 		words[word].due_write = int(Time.get_unix_time_from_system()) +\

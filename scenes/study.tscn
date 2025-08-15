@@ -128,6 +128,7 @@ stream = ExtResource("7_gd3g7")
 
 [node name="Sound4" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_8iu3m")
+volume_db = 1.316
 
 [node name="Due" type="Label" parent="."]
 layout_mode = 0
