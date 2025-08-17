@@ -463,13 +463,14 @@ func get_due_dates_for_words(valid_words: Array) -> Array:
 	for word in valid_words:
 
 		if "due_read" not in words[word]:
-			words[word]["due_read"] = 0
-			words[word]["due_write"] = 0
+			words[word]["due_read"] = int(Time.get_unix_time_from_system())
+			words[word]["due_write"] = int(Time.get_unix_time_from_system())
 
 		var now: int = int(Time.get_unix_time_from_system())
 
 		var sec_remain: int
 
+		assert(words[word].due_read != 0)
 		if words[word].due_read == 0:
 			sec_remain = 0
 		else:

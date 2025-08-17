@@ -33,8 +33,8 @@ func init_from_db() -> void:
 		if "due_read" not in PracticeDB.words[word]:
 			PracticeDB.words[word]["mastery_read"] = 0
 			PracticeDB.words[word]["mastery_write"] = 0
-			PracticeDB.words[word]["due_read"] = 0
-			PracticeDB.words[word]["due_write"] = 0
+			PracticeDB.words[word]["due_read"] = int(Time.get_unix_time_from_system())
+			PracticeDB.words[word]["due_write"] = int(Time.get_unix_time_from_system())
 
 		word_item.mastery_read = int(db_word.mastery_read)
 		word_item.mastery_write = int(db_word.mastery_write)
@@ -124,8 +124,7 @@ func _on_save_pressed() -> void:
 		return
 
 
-	var mastery_read = PracticeDB.words[word].mastery_read
-	var mastery_write = PracticeDB.words[word].mastery_write
+
 
 	if not JapaneseText.has_kanji(word):
 		button_error($Save, "Kanji required in word")
@@ -137,8 +136,15 @@ func _on_save_pressed() -> void:
 			button_error($Save, "Word already exists")
 			return
 
+		var mastery_read = PracticeDB.words[word].mastery_read
+		var mastery_write = PracticeDB.words[word].mastery_write
+
 		_save_new_word(word, furigana, mastery_read, mastery_write)
 	else:
+
+		var mastery_read = PracticeDB.words[_editing_original_word].mastery_read
+		var mastery_write = PracticeDB.words[_editing_original_word].mastery_write
+
 		_update_existing_word(word, furigana, mastery_read, mastery_write)
 
 	#var word_item: Dictionary = PracticeDB.words[word]

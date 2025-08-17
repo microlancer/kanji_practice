@@ -152,6 +152,11 @@ func select_by_real_index(real_index: int) -> void:
 	_item_list.ensure_current_is_visible()
 
 func select_by_visible_index(visible_index: int) -> void:
+
+	if _item_list.item_count <= 0:
+		print("No items in list")
+		return
+
 	_item_list.select(visible_index)
 	var data = _item_list.get_item_metadata(visible_index)
 
