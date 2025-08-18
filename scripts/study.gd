@@ -15,6 +15,7 @@ var _is_due: bool = false
 var _char_index: int = 0 # which character we're writing
 #var _char_stroke_index: int = 0 # which stroke of the current character
 var _check_due_timer: Timer
+var _study_started: bool = false
 
 func _ready() -> void:
 	$DrawPanel.disable()
@@ -63,7 +64,7 @@ func _on_check_due_timer() -> void:
 
 	print("Found due")
 	$Sound4.play()
-
+	_study_started = false
 	_start_study()
 
 func _on_db_loaded() -> void:
@@ -74,6 +75,11 @@ func _set_error(e: String) -> void:
 	$Answer.text = "[color=red]" + e + "[/color]"
 
 func _start_study() -> void:
+
+	if _study_started:
+		return
+
+	_study_started = true
 
 	$Answer.text = ""
 	$TryAgain.visible = false
@@ -259,6 +265,7 @@ func x_hide_random_kanji() -> void:
 
 
 func _on_next_pressed() -> void:
+	_study_started = false
 	_start_study()
 
 
@@ -318,6 +325,7 @@ func xxx_on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void
 			if _char_index == _expected_strokes.size():
 				print("End of word, move to next quiz")
 				$Sound2.play()
+				_study_started = false
 				_start_study()
 				return
 			else:
@@ -399,7 +407,7 @@ func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
 	if JapaneseText.is_kanji(_expected_word[_char_index]):
 		max_allowed_difference = 0.6
 	else:
-		max_allowed_difference = 0.8
+		max_allowed_difference = 0.7
 
 	if similarity < max_allowed_difference:
 		print("Stroke is a match")
@@ -420,6 +428,7 @@ func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
 				else:
 					PracticeDB.reset_mastery_for_word(_mastery_word, _mastery_type)
 					_made_mistake = false
+				_study_started = false
 				_start_study()
 				return
 			else:

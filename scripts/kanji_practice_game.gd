@@ -13,6 +13,7 @@ func _ready() -> void:
 
 	PracticeDB.db_changed.connect(_on_db_changed)
 	PracticeDB.db_loaded.connect(_on_db_loaded)
+	PracticeDB.cloud_data_different.connect(_on_cloud_data_different)
 
 func _on_db_loaded() -> void:
 	$TabBar/Phrases.init_from_db()
@@ -49,3 +50,17 @@ func _on_jump_to_kanji() -> void:
 func _on_jump_to_phrases() -> void:
 	$TabBar.current_tab = PHRASES_TAB_INDEX
 	$TabBar/Phrases.init_from_db()
+
+
+func _on_use_cloud_data_pressed() -> void:
+	PracticeDB.use_cloud_data()
+	$TabBar/Study._study_started = false
+	$TabBar/Study._start_study()
+	$CloudPopup.visible = false
+
+
+func _on_ignore_pressed() -> void:
+	$CloudPopup.visible = false
+
+func _on_cloud_data_different() -> void:
+	$CloudPopup.visible = true

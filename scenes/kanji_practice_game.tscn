@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dofao4rntufk3"]
+[gd_scene load_steps=10 format=3 uid="uid://dofao4rntufk3"]
 
 [ext_resource type="Script" uid="uid://b78er31qaq8bi" path="res://scripts/kanji_practice_game.gd" id="1_8cksl"]
 [ext_resource type="PackedScene" uid="uid://bes2f2dlre0pj" path="res://scenes/study.tscn" id="2_6ygm7"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://ci1fx6rq8xnk1" path="res://scenes/words.tscn" id="6_vqt6i"]
 [ext_resource type="PackedScene" uid="uid://cj2pisgqrvjpg" path="res://scenes/kana.tscn" id="7_3q3tu"]
 [ext_resource type="PackedScene" uid="uid://cj48055cmnawe" path="res://options.tscn" id="7_vqt6i"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3q3tu"]
 
 [node name="KanjiPracticeGame" type="Control"]
 custom_minimum_size = Vector2(1080, 1920)
@@ -58,4 +60,41 @@ visible = false
 [node name="Options" parent="TabBar" instance=ExtResource("7_vqt6i")]
 visible = false
 
+[node name="CloudPopup" type="Panel" parent="."]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 80.0
+offset_top = 608.0
+offset_right = 1024.0
+offset_bottom = 936.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3q3tu")
+
+[node name="Info" type="Label" parent="CloudPopup"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 24.0
+offset_right = 848.0
+offset_bottom = 167.0
+text = "Cloud data is different from local version. Use it?"
+autowrap_mode = 1
+
+[node name="Ignore" type="Button" parent="CloudPopup"]
+layout_mode = 0
+offset_left = 184.0
+offset_top = 192.0
+offset_right = 336.0
+offset_bottom = 270.0
+text = "Ignore"
+
+[node name="UseCloudData" type="Button" parent="CloudPopup"]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 192.0
+offset_right = 788.0
+offset_bottom = 270.0
+text = "Use cloud data"
+
 [connection signal="tab_changed" from="TabBar" to="." method="_on_tab_bar_tab_changed"]
+[connection signal="pressed" from="CloudPopup/Ignore" to="." method="_on_ignore_pressed"]
+[connection signal="pressed" from="CloudPopup/UseCloudData" to="." method="_on_use_cloud_data_pressed"]

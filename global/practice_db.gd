@@ -2,6 +2,7 @@ extends Node
 
 signal db_loaded
 signal db_changed
+signal cloud_data_different
 
 enum MasteryType { MASTERY_READ, MASTERY_WRITE }
 
@@ -18,11 +19,16 @@ var filter_kanji: String = ""
 var filter_kana: String = ""
 
 var cloud_url: String = "https://microlancer.io/kanji/index.php?id=123"
+var _cloud_data: Dictionary = {}
 
 func _ready() -> void:
-	print("loading from " + cloud_url)
-	load_from_cloud()
-
+	print("Loading from file")
+	var timer: Timer = Timer.new()
+	timer.one_shot = true
+	timer.autostart = true
+	timer.wait_time = 0.01
+	timer.timeout.connect(load_from_file)
+	add_child(timer)
 	db_changed.connect(_on_db_changed)
 
 func _on_db_changed():
@@ -100,6 +106,16 @@ func foo():
 
 
 func save_to_cloud() -> void:
+	var data: Dictionary = {
+		"fills": fills,
+		"kana": kana,
+		"kanji": kanji,
+		"phrases": phrases,
+		"words": words
+	}
+	# store into user:// folder
+	save_json(data, "practice_db")
+
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
 	http_request.request_completed.connect(_on_post_completed)
@@ -176,20 +192,50 @@ func set_db_from_json_string(text: String) -> void:
 		print("Unable to parse JSON string")
 		assert(false, "Unable to parse JSON string")
 		return
+
+	var local_hash: int = get_db_hash()
+	var cloud_hash: int = get_data_hash(data)
+
+	var t1: int = get_data_hash(data.words)
+	var t2: int = get_data_hash(words)
+
+	var t3: int = get_data_hash({"p":data.phrases})
+	var phr1: Dictionary = {"p":phrases}
+	var t4: int = get_data_hash(phr1)
+
+	var t5: int = get_data_hash(data.kanji)
+	var t6: int = get_data_hash(kanji)
+
+	var t7: int = get_data_hash(data.fills)
+	var t8: int = get_data_hash(fills)
+
+	var t9: int = get_data_hash(data.kana)
+	var t10: int = get_data_hash(kana)
+
+	if local_hash != cloud_hash:
+		print("Cloud hash different from local hash.")
+		_cloud_data = data
+		cloud_data_different.emit()
+	else:
+		print("Same local and cloud hash. Nothing to update.")
+
+func use_cloud_data() -> void:
+	var data: Dictionary = _cloud_data
 	phrases = data.phrases
 	fills = data.fills
 	words = data.words
 	kanji = data.kanji
 	kana = data.kana
+	save_json(data, "practice_db")
 	db_loaded.emit()
 
 func get_json_string_from_db() -> String:
 	var all_data: Dictionary = {
-		"phrases": phrases,
 		"fills": fills,
-		"words": words,
+		"kana": kana as Dictionary,
 		"kanji": kanji as Dictionary,
-		"kana": kana as Dictionary
+		"phrases": phrases,
+		"words": words
 	}
 	return JSON.stringify(all_data)
 
@@ -520,3 +566,65 @@ func postpone_due_for_word(word: String, type: MasteryType) -> void:
 			add_seconds
 
 	save_to_cloud()
+
+func save_json(data: Dictionary, filename: String) -> void:
+	var file_path := "user://%s.json" % filename
+	var file := FileAccess.open(file_path, FileAccess.WRITE)
+	if file:
+		var json_text := JSON.stringify(data, "\t") # "\t" makes it pretty, omit for compact
+		file.store_string(json_text)
+		file.close()
+		print("Saved JSON to ", file_path)
+	else:
+		push_error("Could not open file for writing: " + file_path)
+
+func load_json(filename: String) -> Dictionary:
+	var file_path := "user://%s.json" % filename
+	if not FileAccess.file_exists(file_path):
+		push_warning("File not found: " + file_path)
+		return {}
+
+	var file := FileAccess.open(file_path, FileAccess.READ)
+	if file:
+		var text := file.get_as_text()
+		file.close()
+
+		var result = JSON.parse_string(text)
+		if typeof(result) == TYPE_DICTIONARY:
+			return result
+		else:
+			push_error("Invalid JSON in file: " + file_path)
+			return {}
+	else:
+		push_error("Could not open file for reading: " + file_path)
+		return {}
+
+func load_from_file() -> void:
+	await get_tree().process_frame
+	var data: Dictionary = load_json("practice_db")
+
+	if not data.is_empty():
+		phrases = data.phrases
+		fills = data.fills
+		words = data.words
+		kanji = data.kanji
+		kana = data.kana
+		db_loaded.emit()
+
+	print("loading from " + cloud_url)
+	load_from_cloud()
+
+func get_db_hash() -> int:
+	var data: Dictionary = {
+		"fills": fills,
+		"kana": kana,
+		"kanji": kanji,
+		"phrases": phrases,
+		"words": words
+	}
+	return get_data_hash(data)
+
+func get_data_hash(data: Dictionary) -> int:
+	var practice_db: PackedByteArray = var_to_bytes(data)
+	print("Var to bytes length: " + str(practice_db.size()))
+	return hash(practice_db)
