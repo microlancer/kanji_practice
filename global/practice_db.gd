@@ -196,22 +196,6 @@ func set_db_from_json_string(text: String) -> void:
 	var local_hash: int = get_db_hash()
 	var cloud_hash: int = get_data_hash(data)
 
-	var t1: int = get_data_hash(data.words)
-	var t2: int = get_data_hash(words)
-
-	var t3: int = get_data_hash({"p":data.phrases})
-	var phr1: Dictionary = {"p":phrases}
-	var t4: int = get_data_hash(phr1)
-
-	var t5: int = get_data_hash(data.kanji)
-	var t6: int = get_data_hash(kanji)
-
-	var t7: int = get_data_hash(data.fills)
-	var t8: int = get_data_hash(fills)
-
-	var t9: int = get_data_hash(data.kana)
-	var t10: int = get_data_hash(kana)
-
 	if local_hash != cloud_hash:
 		print("Cloud hash different from local hash.")
 		_cloud_data = data
