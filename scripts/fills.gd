@@ -22,6 +22,7 @@ func init_from_db() -> void:
 		fill.name = fill_name
 		fill.words = PracticeDB.fills[fill_name].words
 		fill.phrases = PracticeDB.fills[fill_name].phrases
+		fill.is_valid = PracticeDB.fills[fill_name].is_valid
 		all_items.append(fill)
 
 	_fills_list.init_all_items(all_items)
@@ -125,6 +126,7 @@ func _on_save_pressed() -> void:
 	$Save.disabled = true
 	#restore_button(2, $Save, "Save changes")
 
+	PracticeDB.mark_valid_items()
 	PracticeDB.db_changed.emit()
 
 func _save_new_fill(fill_name: String, words_array: Array) -> void:
@@ -176,6 +178,7 @@ func _create_words_if_missing(words: Array) -> void:
 			print("Already exists: " + i)
 
 	if added:
+		PracticeDB.mark_valid_items()
 		PracticeDB.db_changed.emit()
 
 func _on_new_pressed() -> void:

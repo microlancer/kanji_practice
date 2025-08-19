@@ -25,7 +25,8 @@ func init_from_db() -> void:
 
 	for phrase in PracticeDB.phrases:
 		var phrase_item: PhraseItem = PhraseItem.new()
-		phrase_item.text = phrase
+		phrase_item.text = phrase.text
+		phrase_item.is_valid = phrase.is_valid
 		print({"phrase_item":phrase_item})
 		all_phrases.append(phrase_item)
 
@@ -64,11 +65,11 @@ func _on_phrase_selected(item: FilterableListItem) -> void:
 	print("Picked " + str(item.real_index))
 	var phrase = PracticeDB.phrases[item.real_index]
 	_editing_real_index = item.real_index
-	$Phrase.text = phrase
+	$Phrase.text = phrase.text
 	$Delete.visible = true
 	$Fills.visible = true
 
-	if _phrase_contains_fills(phrase):
+	if _phrase_contains_fills(phrase.text):
 		$Fills.disabled = false
 	else:
 		$Fills.disabled = true
@@ -88,8 +89,10 @@ func _on_save_pressed() -> void:
 		return
 
 	if _editing_real_index == NONE:
+		print("P: Adding new phrase")
 		_add_new_phrase(phrase)
 	else:
+		print("P: Updating existing phrase")
 		_update_existing_phrase(phrase)
 
 	if _phrase_contains_fills(phrase):
@@ -99,7 +102,12 @@ func _on_save_pressed() -> void:
 
 	$Delete.visible = true
 	$Fills.visible = true
+
+	PracticeDB.mark_valid_items()
 	_phrase_list.apply_filter()
+
+	#if _editing_real_index == NONE:
+	#	_editing_real_index = _phrase_list.get_item_count() - 1
 
 	_phrase_list.select_by_real_index(_editing_real_index)
 
@@ -112,6 +120,7 @@ func _on_save_pressed() -> void:
 
 	$Save.disabled = true
 
+
 	PracticeDB.db_changed.emit()
 
 
@@ -119,14 +128,15 @@ func _add_new_phrase(phrase: String) -> void:
 	#button_success($Save, "Added")
 	var phrase_item: PhraseItem = PhraseItem.new()
 	phrase_item.text = phrase
+	phrase_item.is_valid = false
 	_phrase_list.add_item(phrase_item)
-	PracticeDB.phrases.append(phrase)
+	PracticeDB.phrases.append(phrase_item.to_object())
 	_editing_real_index = PracticeDB.phrases.size() - 1
 
 func _update_existing_phrase(phrase: String) -> void:
 	var phrase_item: PhraseItem = _phrase_list.get_item_by_real_index(_editing_real_index)
 	phrase_item.text = phrase
-	PracticeDB.phrases[_editing_real_index] = phrase
+	PracticeDB.phrases[_editing_real_index].text = phrase
 	#button_success($Save, "Updated")
 
 func _on_new_pressed() -> void:
@@ -161,12 +171,13 @@ func _create_fills_if_missing(list_names: Array) -> void:
 			print("Already exists: " + i)
 
 	if added:
+		PracticeDB.mark_valid_items()
 		PracticeDB.db_changed.emit()
 
 func _on_fills_pressed() -> void:
 	#var phrase: String = phrase_list.all_items[_editing_real_index]
-	var phrase = PracticeDB.phrases[_editing_real_index]
-	var fills_in_phrase: Array = _get_lists_in_phrase(phrase)
+	var phrase: Dictionary = PracticeDB.phrases[_editing_real_index]
+	var fills_in_phrase: Array = _get_lists_in_phrase(phrase.text)
 	_create_fills_if_missing(fills_in_phrase)
 	PracticeDB.filter_fills = "|".join(fills_in_phrase)
 	print(fills_in_phrase)

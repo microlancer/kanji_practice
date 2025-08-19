@@ -27,6 +27,9 @@ func init_from_db() -> void:
 	for word in PracticeDB.words:
 		var word_item: WordItem = WordItem.new()
 		word_item.word = word
+		if "is_valid" not in PracticeDB.words[word]:
+			PracticeDB.words[word]["is_valid"] = false
+		word_item.is_valid = PracticeDB.words[word].is_valid
 		var db_word: Dictionary = PracticeDB.words[word]
 		word_item.furigana = db_word.furigana
 
@@ -168,6 +171,7 @@ func _on_save_pressed() -> void:
 	$Save.disabled = true
 	#restore_button(2, $Save, "Save")
 
+	PracticeDB.mark_valid_items()
 	PracticeDB.db_changed.emit()
 
 func _save_new_word(word: String, furigana: String, mastery_read: int, mastery_write: int) -> void:
@@ -258,4 +262,5 @@ func _create_kanji_if_missing(kanji_array: Array) -> void:
 			print("Already exists: " + kanji)
 
 	if added:
+		PracticeDB.mark_valid_items()
 		PracticeDB.db_changed.emit()

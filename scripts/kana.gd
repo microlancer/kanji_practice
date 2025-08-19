@@ -95,6 +95,7 @@ func _on_redraw_pressed() -> void:
 			}
 		PracticeDB.kana[kana].draw_data = kana_item.draw_data
 		_kana_list.apply_filter()
+		PracticeDB.mark_valid_items()
 		PracticeDB.db_changed.emit()
 
 		# if the edited item is on the filtered list, try to select it

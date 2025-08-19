@@ -9,5 +9,5 @@ func get_text() -> String:
 		return text + " (no draw data)"
 	return text + " - " + str(draw_data.length()) + " bytes"
 
-func is_valid() -> bool:
-	return not draw_data == ""
+#func is_valid() -> bool:
+#	return not draw_data == ""

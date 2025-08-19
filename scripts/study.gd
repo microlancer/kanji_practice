@@ -158,8 +158,8 @@ func _start_study() -> void:
 	var valid_phrases_for_fill: Array = []
 
 	for phrase in valid_data.phrases:
-		if phrase.contains(random_fill_name):
-			valid_phrases_for_fill.append(phrase)
+		if phrase.text.contains(random_fill_name):
+			valid_phrases_for_fill.append(phrase.text)
 
 	if valid_phrases_for_fill.is_empty():
 		_set_error("No valid phrase")

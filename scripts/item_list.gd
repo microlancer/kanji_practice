@@ -45,10 +45,11 @@ func _gui_input(event: InputEvent) -> void:
 
 		if is_dragging:
 			accept_event()  # prevent built-in drag selection changes
-			var sc = get_parent() as ScrollContainer
+			#var sc = get_parent() as ScrollContainer
+			var sc: VScrollBar = get_v_scroll_bar()
 			if sc:
-				sc.scroll_vertical -= event.relative.y
-				sc.scroll_horizontal -= event.relative.x
+				sc.value -= event.relative.y
+				#sc.scroll_horizontal -= event.relative.x
 				velocity = event.relative / get_process_delta_time()
 
 	elif event is InputEventMouseButton:
@@ -82,8 +83,9 @@ func _gui_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	if not is_dragging and velocity.length() > 1:
-		var sc = get_parent() as ScrollContainer
+		#var sc = get_parent() as ScrollContainer
+		var sc: VScrollBar = get_v_scroll_bar()
 		if sc:
-			sc.scroll_vertical -= velocity.y * delta
-			sc.scroll_horizontal -= velocity.x * delta
+			sc.value -= velocity.y * delta
+			#sc.value -= velocity.x * delta
 			velocity *= pow(FRICTION, delta * 60)

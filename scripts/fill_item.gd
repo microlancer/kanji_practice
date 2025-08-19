@@ -11,7 +11,7 @@ func get_text() -> String:
 func get_words_as_text() -> String:
 	return ",".join(words)
 
-func is_valid() -> bool:
+func xis_valid() -> bool:
 
 	if words.size() == 0:
 		return false
@@ -27,7 +27,7 @@ func is_valid() -> bool:
 			word_item.mastery_write = 0
 			word_item.word = word
 			word_item.furigana = PracticeDB.words[word].furigana
-			if not word_item.is_valid():
+			if not word_item.is_valid:
 				print("Word item is not valid: " + word)
 				return false
 		else:
@@ -41,6 +41,6 @@ func is_valid() -> bool:
 
 func _fill_used_in_phrase() -> bool:
 	for phrase in PracticeDB.phrases:
-		if phrase.contains(name):
+		if phrase.text.contains(name):
 			return true
 	return false

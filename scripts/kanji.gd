@@ -26,6 +26,9 @@ func init_from_db() -> void:
 		#print(kanji)
 		var kanji_item: KanjiItem = KanjiItem.new()
 		kanji_item.text = kanji
+		if "is_valid" not in PracticeDB.kanji[kanji]:
+			PracticeDB.kanji[kanji]["is_valid"] = false
+		kanji_item.is_valid = PracticeDB.kanji[kanji].is_valid
 		if "draw_data" not in PracticeDB.kanji[kanji] or \
 			not PracticeDB.kanji[kanji].draw_data is String:
 			PracticeDB.kanji[kanji] = {
@@ -99,6 +102,7 @@ func _on_redraw_pressed() -> void:
 		#kanji_item.draw_data = _strokes
 		#PracticeDB.kanji[kanji].draw_data = kanji_item.draw_data
 		_kanji_list.apply_filter()
+		PracticeDB.mark_valid_items()
 		PracticeDB.db_changed.emit()
 
 		# if the edited item is on the filtered list, try to select it

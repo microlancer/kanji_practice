@@ -27,24 +27,28 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_cr32s")
 
+[node name="ItemList" type="ItemList" parent="."]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+offset_left = 24.0
+offset_top = 288.0
+offset_right = 1056.0
+offset_bottom = 744.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/outline_size = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_by70f")
+script = ExtResource("2_by70f")
+metadata/_edit_lock_ = true
+
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 24.0
 offset_top = 288.0
 offset_right = 1064.0
 offset_bottom = 744.0
 vertical_scroll_mode = 2
-
-[node name="ItemList" type="ItemList" parent="ScrollContainer"]
-custom_minimum_size = Vector2(200, 200)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/outline_size = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_by70f")
-auto_height = true
-script = ExtResource("2_by70f")
-metadata/_edit_lock_ = true
 
 [node name="FilterEdit" type="TextEdit" parent="."]
 layout_mode = 1
@@ -80,6 +84,6 @@ offset_right = 1056.0
 offset_bottom = 270.0
 text = "X"
 
-[connection signal="item_selected" from="ScrollContainer/ItemList" to="." method="_on_item_list_item_selected"]
+[connection signal="item_selected" from="ItemList" to="." method="_on_item_list_item_selected"]
 [connection signal="text_changed" from="FilterEdit" to="." method="_on_filter_edit_text_changed"]
 [connection signal="pressed" from="ClearButton" to="." method="_on_clear_button_pressed"]

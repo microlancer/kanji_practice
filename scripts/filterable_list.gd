@@ -12,7 +12,7 @@ const ITEM_NOT_VISIBLE = -1
 #@export var all_items: Array[String] = []
 #@export var all_items_metadata: Array[Dictionary] = []
 
-@onready var _item_list: ItemList = $ScrollContainer/ItemList
+@onready var _item_list: ItemList = $ItemList
 #var _visible_items_metadata: Array = []
 
 var _all_items: Array[FilterableListItem] = []
@@ -50,7 +50,7 @@ func apply_filter() -> void:
 	if filter_edit.text == "":
 		for item in _all_items:
 			_item_list.add_item(item.get_text())
-			if not item.is_valid():
+			if not item.is_valid:
 				_item_list.set_item_custom_fg_color(visible_index, Color.RED)
 			_item_list.set_item_metadata(visible_index, {
 				"visible_index": visible_index,
@@ -86,7 +86,7 @@ func apply_filter() -> void:
 				})
 				item.visible_index = visible_index
 				item.real_index = real_index
-				if not item.is_valid():
+				if not item.is_valid:
 					_item_list.set_item_custom_fg_color(visible_index, Color.RED)
 				#if all_items_metadata.size() > 0:
 				#	print("Setting metadata")
@@ -131,7 +131,7 @@ func _on_item_list_item_selected(visible_index: int) -> void:
 	var real_index = data.real_index
 	var item = _all_items[real_index]
 
-	if not item.is_valid():
+	if not item.is_valid:
 		_item_list.add_theme_color_override("font_hovered_selected_color", Color.LIGHT_SALMON)
 		_item_list.add_theme_color_override("font_selected_color", Color.LIGHT_SALMON)
 		#_item_list.add_theme_color_override("font_hovered_color", Color.LIGHT_PINK)
@@ -148,8 +148,15 @@ func _on_item_list_item_selected(visible_index: int) -> void:
 
 func select_by_real_index(real_index: int) -> void:
 	# We convert real index to visible index (if possible)
+
+	var item = _all_items[real_index]
+	var visible_index = item.visible_index
+
 	_item_list.select(_all_items[real_index].visible_index)
 	_item_list.ensure_current_is_visible()
+	#_item_list.scroll_vertical_enabled = true
+	#var s = _item_list.parent().scroll_x
+	#_item_list.get_v_scroll_bar().value = 99999
 
 func select_by_visible_index(visible_index: int) -> void:
 
@@ -181,3 +188,6 @@ func deselect_all() -> void:
 
 func get_item_by_real_index(real_index: int) -> FilterableListItem:
 	return _all_items[real_index]
+
+func get_item_count() -> int:
+	return _all_items.size()

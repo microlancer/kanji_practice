@@ -34,77 +34,6 @@ func _ready() -> void:
 func _on_db_changed():
 	pass
 
-func foo():
-	phrases = [
-		"<place>の<subarea>で<verbing>"
-	]
-
-	fills = {
-		"place": {
-			"words": ["駅","家","会社","公園","自宅"],
-			"phrases": [0],
-		},
-		"subarea": {
-			"words": ["前"],
-			"phrases": [0],
-		},
-		"verbing": {
-			"words": ["待っている"],
-			"phrases": [0],
-		},
-		"person": {
-			"words": ["田中さん","マイケルくん"],
-			"phrases": [],
-		},
-		"edible": {
-			"words": ["チキン","ラーメン","お寿司"],
-			"phrases": [],
-		},
-		"food-adj": {
-			"words": ["おいしいな","辛いな","冷たいな","熱いな"],
-			"phrases": [],
-		}
-	}
-
-	words = {
-		"駅": {
-			"furigana": "えき",
-			"mastery": 0,
-			"fills": ["place"]
-		},
-		"前": {
-			"furigana": "まえ",
-			"mastery": 0,
-			"fills": ["place"]
-		},
-		"待": {
-			"furigana": "ま",
-			"mastery": 0,
-			"fills": []
-		},
-		"待っている": {
-			"furigana": "まっている",
-			"mastery": 0,
-			"fills": ["place"]
-		}
-	}
-
-	kanji = {
-		"駅": {
-			"draw_data": [],
-			"words": ["駅"]
-		},
-		"前": {
-			"draw_data": [],
-			"words": ["前"]
-		},
-		"待": {
-			"draw_data": [],
-			"words": ["待", "待っている"]
-		}
-	}
-
-
 func save_to_cloud() -> void:
 	var data: Dictionary = {
 		"fills": fills,
@@ -296,7 +225,7 @@ func get_valid_data() -> Dictionary:
 	var valid_fills: Dictionary = {} # same fill can be in many phrases
 	var valid_words: Dictionary = {} # same word can be in many fills
 	for phrase in phrases:
-		var extracted_fills: Array = extract_fills(phrase)
+		var extracted_fills: Array = extract_fills(phrase.text)
 		var is_valid_phrase: bool = true
 		var valid_words_for_phrase: Array = []
 		var valid_fills_for_phrase: Array = []
@@ -593,6 +522,9 @@ func load_from_file() -> void:
 		words = data.words
 		kanji = data.kanji
 		kana = data.kana
+
+		mark_valid_items()
+
 		db_loaded.emit()
 
 	print("loading from " + cloud_url)
@@ -612,3 +544,123 @@ func get_data_hash(data: Dictionary) -> int:
 	var practice_db: PackedByteArray = var_to_bytes(data)
 	print("Var to bytes length: " + str(practice_db.size()))
 	return hash(practice_db)
+
+func mark_valid_items() -> void:
+	_mark_valid_phrases()
+	_mark_valid_fills()
+	_mark_valid_words()
+	_mark_valid_kanji()
+
+func _mark_valid_phrases() -> void:
+	for i in phrases.size():
+		var phrase_fills: Array = extract_fills(phrases[i].text)
+
+
+
+		if not _fills_are_valid_downstream(phrase_fills):
+			phrases[i].is_valid = false
+		else:
+			phrases[i].is_valid = true
+
+func _fills_are_valid_downstream(phrase_fills: Array) -> bool:
+
+	if phrase_fills.is_empty():
+		print("Empty, returning invalid")
+		return false
+
+	for fill in phrase_fills:
+		if fill not in fills:
+			print("Cannot find fill " + fill + " in DB, returning invalid")
+			return false
+
+		if not _fill_has_words_and_kanji(fill):
+			return false
+
+	return true
+
+func _fill_has_words_and_kanji(fill: String) -> bool:
+
+	if fills[fill].words.is_empty():
+		print("Empty fill, no words, returning invalid")
+		return false
+
+	# We make sure that the given fill has valid words+furigana and valid
+	# kanji with draw data.
+	for word in fills[fill].words:
+		if not _word_has_valid_kanji(word):
+			return false
+	return true
+
+func _word_has_valid_kanji(word: String) -> bool:
+	if not JapaneseText.has_kanji(word):
+		return true # All kana words are still valid
+	if word not in words:
+		return false
+	if words[word].furigana == "":
+		return false
+	else:
+		var kanji_array: Array = get_kanji_array(word)
+		for k in kanji_array:
+			if kanji[k].draw_data == "":
+				return false
+	return true
+
+func _mark_valid_fills() -> void:
+	for fill in fills:
+		# Upstream - make sure the fill is used in at least one valid phrase
+		var at_least_one: bool = false
+
+		for phrase in phrases:
+			if phrase.is_valid and phrase.text.contains(fill):
+				at_least_one = true
+				break
+
+		if not at_least_one:
+			fills[fill].is_valid = false
+			continue
+
+		# Downstream - verify words and kanji
+		if not _fill_has_words_and_kanji(fill):
+			fills[fill].is_valid = false
+		else:
+			fills[fill].is_valid = true
+
+func _mark_valid_words() -> void:
+	for word in words:
+		# Upstream - make sure the word is used in at least one valid fill
+		var at_least_one: bool = false
+
+		for fill in fills:
+			if fills[fill].is_valid and fills[fill].words.has(word):
+				at_least_one = true
+				break
+
+		if not at_least_one:
+			words[word].is_valid = false
+			continue
+
+		# Downstream - verify kanji
+		if not _word_has_valid_kanji(word):
+			words[word].is_valid = false
+		else:
+			words[word].is_valid = true
+
+func _mark_valid_kanji() -> void:
+	for k in kanji:
+		# Upstream - make sure the kanji is used in at least one valid word
+		var at_least_one: bool = false
+
+		for word in words:
+			if words[word].is_valid and word.contains(k):
+				at_least_one = true
+				break
+
+		if not at_least_one:
+			kanji[k].is_valid = false
+			continue
+
+		# Downstream - make sure kanji has draw data
+		if kanji[k].draw_data != "":
+			kanji[k].is_valid = true
+		else:
+			kanji[k].is_valid = false

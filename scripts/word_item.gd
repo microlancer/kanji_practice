@@ -12,7 +12,7 @@ var fills: Array = []
 func get_text() -> String:
 	return word + " (" + furigana + ")"
 
-func is_valid() -> bool:
+func xis_valid() -> bool:
 	var kanji_array: Array = PracticeDB.get_kanji_array(word)
 	for kanji in kanji_array:
 		if kanji not in PracticeDB.kanji:
