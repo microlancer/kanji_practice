@@ -66,7 +66,7 @@ func _on_item_selected(item: FilterableListItem) -> void:
 	$KanjiEdit.text = kanji_item.text
 	$Redraw.disabled = false
 
-	if kanji_item.draw_data.is_empty():
+	if kanji_item.draw_data == "":
 		$Example.visible = true
 		$Example.text = kanji_item.text
 		$Example.modulate = Color(255, 255, 255, 0.2)
@@ -92,6 +92,7 @@ func _on_redraw_pressed() -> void:
 		print("after", check.size())
 
 		kanji_item.draw_data = base64_draw_data
+		kanji_item.is_valid = true
 		#print(PracticeDB.kanji[kanji])
 		#print(typeof(PracticeDB.kanji[kanji]), PracticeDB.kanji[kanji])
 		if "draw_data" not in PracticeDB.kanji[kanji]:
@@ -101,8 +102,11 @@ func _on_redraw_pressed() -> void:
 		PracticeDB.kanji[kanji].draw_data = kanji_item.draw_data
 		#kanji_item.draw_data = _strokes
 		#PracticeDB.kanji[kanji].draw_data = kanji_item.draw_data
-		_kanji_list.apply_filter()
+
 		PracticeDB.mark_valid_items()
+
+		_kanji_list.apply_filter()
+
 		PracticeDB.db_changed.emit()
 
 		# if the edited item is on the filtered list, try to select it

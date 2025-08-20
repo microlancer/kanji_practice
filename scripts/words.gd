@@ -185,6 +185,7 @@ func _save_new_word(word: String, furigana: String, mastery_read: int, mastery_w
 		"furigana": furigana,
 		"mastery_read": mastery_read,
 		"mastery_write": mastery_write,
+		"is_valid": false,
 		"fills": [] # TODO
 	}
 
@@ -199,6 +200,7 @@ func _update_existing_word(word: String, furigana: String, mastery_read: int, ma
 			"furigana": furigana,
 			"mastery_read": mastery_read,
 			"mastery_write": mastery_write,
+			"is_valid": false,
 			"fills": [] # TODO
 		}
 		#replace_list.all_items_metadata[data.real_index] = {"name": item_name, "real_index": data.real_index}
@@ -213,6 +215,10 @@ func _update_existing_word(word: String, furigana: String, mastery_read: int, ma
 	word_item.mastery_read = mastery_read
 	word_item.mastery_write = mastery_write
 	word_item.fills = [] # TODO
+
+	PracticeDB.mark_valid_items()
+	word_item.is_valid = PracticeDB.words[word].is_valid # use calculated value
+
 	_words_list.apply_filter()
 
 func _on_text_changed() -> void:
@@ -254,7 +260,8 @@ func _create_kanji_if_missing(kanji_array: Array) -> void:
 		if not PracticeDB.kanji.has(kanji):
 			print("Adding to kanji: " + kanji)
 			PracticeDB.kanji[kanji] = {
-				"draw_data": [],
+				"draw_data": "",
+				"is_valid": false,
 				"words": [], #TODO
 			}
 			added = true

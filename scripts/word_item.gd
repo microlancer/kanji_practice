@@ -18,7 +18,7 @@ func xis_valid() -> bool:
 		if kanji not in PracticeDB.kanji:
 			print("Kanji not in DB " + kanji)
 			return false
-		if PracticeDB.kanji[kanji].draw_data.is_empty():
+		if PracticeDB.kanji[kanji].draw_data == "":
 			print("No draw data for " + kanji)
 			return false
 	if furigana == "":

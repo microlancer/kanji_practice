@@ -155,7 +155,7 @@ func get_json_string_from_db() -> String:
 func extract_fills(string: String) -> Array:
 	print("Extracting fills from: " + string)
 	var regex := RegEx.new()
-	regex.compile("([a-z\\-]+)")
+	regex.compile("([0-9a-z\\-]+)")
 
 	var matches := []
 	for result in regex.search_all(string):
@@ -601,6 +601,8 @@ func _word_has_valid_kanji(word: String) -> bool:
 	else:
 		var kanji_array: Array = get_kanji_array(word)
 		for k in kanji_array:
+			if k not in kanji:
+				return false
 			if kanji[k].draw_data == "":
 				return false
 	return true

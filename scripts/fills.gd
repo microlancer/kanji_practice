@@ -134,6 +134,7 @@ func _save_new_fill(fill_name: String, words_array: Array) -> void:
 	var new_fill: FillItem = FillItem.new()
 	new_fill.name = fill_name
 	new_fill.words = words_array
+	new_fill.valid = false
 	_fills_list.add_item(new_fill)
 
 	PracticeDB.fills[new_fill.name] = {
@@ -160,6 +161,10 @@ func _update_existing_fill(fill_name: String, words_array: Array) -> void:
 	fill.name = fill_name
 	fill.words = words_array
 	fill.phrases = [] # TODO
+
+	PracticeDB.mark_valid_items()
+	fill.is_valid = PracticeDB.fills[fill_name].is_valid # use calculated value
+
 	_fills_list.apply_filter()
 
 func _create_words_if_missing(words: Array) -> void:

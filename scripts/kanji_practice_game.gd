@@ -34,6 +34,9 @@ func _on_tab_bar_tab_changed(tab: int) -> void:
 			if i.has_method("init_filter"):
 				print("init_filter")
 				i.init_filter()
+			if i.has_method("init_from_db"):
+				print("init_from_db")
+				i.init_from_db()
 
 func _on_jump_to_fills() -> void:
 	$TabBar.current_tab = FILLS_TAB_INDEX

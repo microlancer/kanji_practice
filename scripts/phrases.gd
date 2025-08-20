@@ -44,6 +44,8 @@ func init_filter() -> void:
 
 	if _phrase_list.filter_edit.text != "":
 		_phrase_list.select_by_visible_index(0)
+	else:
+		_editing_real_index = NONE
 
 func _on_filter_changed(filter: String) -> void:
 	if filter == "":
@@ -137,6 +139,10 @@ func _update_existing_phrase(phrase: String) -> void:
 	var phrase_item: PhraseItem = _phrase_list.get_item_by_real_index(_editing_real_index)
 	phrase_item.text = phrase
 	PracticeDB.phrases[_editing_real_index].text = phrase
+
+	PracticeDB.mark_valid_items()
+	phrase_item.is_valid = PracticeDB.phrases[_editing_real_index].is_valid
+
 	#button_success($Save, "Updated")
 
 func _on_new_pressed() -> void:

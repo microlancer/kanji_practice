@@ -21,7 +21,7 @@ script = ExtResource("1_gnhbr")
 
 [node name="FilterableList" parent="." instance=ExtResource("3_fcsfx")]
 
-[node name="ScrollContainer" parent="FilterableList" index="0"]
+[node name="ScrollContainer" parent="FilterableList" index="1"]
 offset_bottom = 912.0
 
 [node name="KanjiLabel" type="Label" parent="."]
