@@ -9,6 +9,8 @@ var _editing_real_index: int = NONE
 
 func _ready() -> void:
 
+	$AreYouSure.visible = false
+
 	_phrase_list.item_selected.connect(_on_phrase_selected)
 	_phrase_list.filter_changed.connect(_on_filter_changed)
 
@@ -189,3 +191,29 @@ func _on_fills_pressed() -> void:
 	print(fills_in_phrase)
 
 	jump_to_fills.emit()
+
+
+func _on_delete_pressed() -> void:
+	$AreYouSure.visible = true
+
+
+func _on_no_cancel_pressed() -> void:
+	$AreYouSure.visible = false
+
+
+func _on_yes_delete_pressed() -> void:
+	_delete_existing_phrase()
+
+func _delete_existing_phrase() -> void:
+	#var phrase_item: PhraseItem = _phrase_list.get_item_by_real_index(_editing_real_index)
+	PracticeDB.phrases.remove_at(_editing_real_index)
+
+	_phrase_list.remove_item_by_real_index(_editing_real_index)
+
+	PracticeDB.mark_valid_items()
+	PracticeDB.db_changed.emit()
+
+	init_from_db()
+
+	$AreYouSure.visible = false
+	_editing_real_index = NONE

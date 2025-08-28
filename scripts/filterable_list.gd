@@ -189,5 +189,8 @@ func deselect_all() -> void:
 func get_item_by_real_index(real_index: int) -> FilterableListItem:
 	return _all_items[real_index]
 
+func remove_item_by_real_index(real_index: int) -> void:
+	_all_items.remove_at(real_index)
+
 func get_item_count() -> int:
 	return _all_items.size()

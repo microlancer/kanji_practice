@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="1_ik3ua"]
 [ext_resource type="Script" uid="uid://dkjpe1h01qajx" path="res://scripts/kana.gd" id="1_lbobb"]
 [ext_resource type="Script" uid="uid://b4jf6wsar8kht" path="res://scripts/my_text_edit.gd" id="2_qx2ew"]
-[ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/kanji-block2.png" id="3_fb42p"]
+[ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/images/kanji-block2.png" id="3_fb42p"]
 [ext_resource type="Script" uid="uid://de5btcjhreqd2" path="res://scripts/draw_panel.gd" id="4_tqo21"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mv8oo"]

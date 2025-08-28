@@ -1,13 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://bes2f2dlre0pj"]
+[gd_scene load_steps=13 format=3 uid="uid://bes2f2dlre0pj"]
 
 [ext_resource type="Script" uid="uid://ciw76hlt2ogtq" path="res://scripts/study.gd" id="1_e7rny"]
 [ext_resource type="PackedScene" uid="uid://cvxd2f8dbnvbs" path="res://addons/godot_japanese_text/japanese_text.tscn" id="2_8q8l4"]
 [ext_resource type="Script" uid="uid://de5btcjhreqd2" path="res://scripts/draw_panel.gd" id="3_x8trg"]
-[ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/kanji-block2.png" id="3_xc6te"]
-[ext_resource type="AudioStream" uid="uid://dfw2ojhav7plk" path="res://assets/Fantasy_UI (4).wav" id="5_cjqim"]
-[ext_resource type="AudioStream" uid="uid://8c8cf4nqpt65" path="res://assets/Fantasy_UI (5).wav" id="6_rw6m0"]
-[ext_resource type="AudioStream" uid="uid://bylxwc6o1117b" path="res://assets/wind down 1.wav" id="7_gd3g7"]
-[ext_resource type="AudioStream" uid="uid://dxyc0xwhy41gw" path="res://assets/Piano_Ui (2).wav" id="8_8iu3m"]
+[ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/images/kanji-block2.png" id="3_xc6te"]
+[ext_resource type="AudioStream" uid="uid://dfw2ojhav7plk" path="res://assets/sounds/Fantasy_UI (4).wav" id="5_cjqim"]
+[ext_resource type="AudioStream" uid="uid://8c8cf4nqpt65" path="res://assets/sounds/Fantasy_UI (5).wav" id="6_rw6m0"]
+[ext_resource type="AudioStream" uid="uid://bylxwc6o1117b" path="res://assets/sounds/wind down 1.wav" id="7_gd3g7"]
+[ext_resource type="AudioStream" uid="uid://dxyc0xwhy41gw" path="res://assets/sounds/Piano_Ui (2).wav" id="8_8iu3m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8trg"]
 bg_color = Color(0.0768358, 0.0768358, 0.0768358, 1)
@@ -27,6 +27,8 @@ texture = ExtResource("3_xc6te")
 [sub_resource type="LabelSettings" id="LabelSettings_gd3g7"]
 font_size = 40
 font_color = Color(1, 1, 1, 0.47451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8iu3m"]
 
 [node name="Study" type="Control"]
 layout_mode = 3
@@ -63,13 +65,14 @@ offset_right = 990.0
 offset_bottom = 774.0
 text = "Edit"
 
-[node name="Next" type="Button" parent="."]
+[node name="NewQuestion" type="Button" parent="."]
+visible = false
 layout_mode = 0
-offset_left = 920.0
+offset_left = 728.0
 offset_top = 1800.0
-offset_right = 1046.0
+offset_right = 1058.0
 offset_bottom = 1902.0
-text = "Next"
+text = "New question"
 
 [node name="Clear" type="Button" parent="."]
 visible = false
@@ -82,19 +85,19 @@ text = "Clear"
 
 [node name="TryAgain" type="Button" parent="."]
 layout_mode = 0
-offset_left = 288.0
+offset_left = 232.0
 offset_top = 1800.0
-offset_right = 508.0
+offset_right = 824.0
 offset_bottom = 1902.0
 text = "Try again"
 
 [node name="ShowAnswer" type="Button" parent="."]
 layout_mode = 0
-offset_left = 552.0
-offset_top = 1800.0
-offset_right = 859.0
-offset_bottom = 1902.0
-text = "Show answer"
+offset_left = 392.0
+offset_top = 672.0
+offset_right = 725.0
+offset_bottom = 774.0
+text = "Reveal answer"
 
 [node name="DrawPanel" type="Panel" parent="."]
 layout_mode = 0
@@ -140,6 +143,7 @@ text = "0 due"
 label_settings = SubResource("LabelSettings_gd3g7")
 
 [node name="Version" type="Label" parent="."]
+visible = false
 self_modulate = Color(0.325441, 0.325441, 0.325441, 1)
 z_index = -1
 layout_mode = 0
@@ -148,12 +152,54 @@ offset_top = 1824.0
 offset_right = 328.0
 offset_bottom = 1894.0
 text = "Version 1.0.0"
+metadata/_edit_lock_ = true
+
+[node name="MistakePanel" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 0
+offset_left = 152.0
+offset_top = 992.0
+offset_right = 928.0
+offset_bottom = 1736.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8iu3m")
+
+[node name="ResetMastery" type="Button" parent="MistakePanel"]
+z_index = 1
+layout_mode = 0
+offset_left = 64.0
+offset_top = 448.0
+offset_right = 720.0
+offset_bottom = 560.0
+theme_override_colors/font_color = Color(1, 0.614053, 0.555935, 1)
+text = "Yes, reset mastery to 0"
+
+[node name="LeaveAsScheduled" type="Button" parent="MistakePanel"]
+z_index = 1
+layout_mode = 0
+offset_left = 72.0
+offset_top = 280.0
+offset_right = 712.0
+offset_bottom = 392.0
+text = "No, leave as scheduled."
+
+[node name="Label" type="Label" parent="MistakePanel"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 24.0
+offset_right = 744.0
+offset_bottom = 208.0
+text = "Accident or mistake detected.
+Relearn this word?"
+horizontal_alignment = 1
 
 [connection signal="pressed" from="Edit" to="." method="_on_edit_pressed"]
-[connection signal="pressed" from="Next" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="NewQuestion" to="." method="_on_next_pressed"]
 [connection signal="pressed" from="Clear" to="." method="_on_clear_pressed"]
 [connection signal="pressed" from="TryAgain" to="." method="_on_try_again_pressed"]
 [connection signal="pressed" from="ShowAnswer" to="." method="_on_show_answer_pressed"]
 [connection signal="stroke_drawn_raw" from="DrawPanel" to="." method="_on_draw_panel_stroke_drawn_raw"]
+[connection signal="pressed" from="MistakePanel/ResetMastery" to="." method="_on_reset_mastery_pressed"]
+[connection signal="pressed" from="MistakePanel/LeaveAsScheduled" to="." method="_on_leave_as_scheduled_pressed"]
 
 [editable path="Panel/JapaneseText"]

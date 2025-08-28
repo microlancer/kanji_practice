@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://dv3fvk7yqpxvj"]
+[gd_scene load_steps=4 format=3 uid="uid://dv3fvk7yqpxvj"]
 
 [ext_resource type="Script" uid="uid://onl322saajc7" path="res://scripts/fills.gd" id="1_2u4w2"]
 [ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="2_dhxyd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xf4ep"]
+bg_color = Color(0.272655, 0.272655, 0.272655, 1)
 
 [node name="Fills" type="Control"]
 physics_interpolation_mode = 0
@@ -81,8 +84,54 @@ offset_right = 1066.0
 offset_bottom = 894.0
 text = "New fill"
 
+[node name="AreYouSure" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(500, 500)
+offset_left = 88.0
+offset_top = 632.0
+offset_right = 1008.0
+offset_bottom = 1352.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xf4ep")
+
+[node name="Label" type="Label" parent="AreYouSure"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -284.0
+offset_top = -232.0
+offset_right = 284.0
+offset_bottom = -89.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Are you sure you want to delete this item?"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="YesDelete" type="Button" parent="AreYouSure"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 368.0
+offset_right = 688.0
+offset_bottom = 446.0
+theme_override_colors/font_color = Color(1, 0.407245, 0.338652, 1)
+text = "Yes, delete it"
+
+[node name="NoCancel" type="Button" parent="AreYouSure"]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 512.0
+offset_right = 688.0
+offset_bottom = 590.0
+text = "No, cancel"
+
 [connection signal="text_changed" from="NameEdit" to="." method="_on_words_text_changed"]
 [connection signal="text_changed" from="ListOfWords" to="." method="_on_words_text_changed"]
 [connection signal="pressed" from="Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="Words" to="." method="_on_words_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_new_pressed"]
+[connection signal="pressed" from="AreYouSure/YesDelete" to="." method="_on_yes_delete_pressed"]
+[connection signal="pressed" from="AreYouSure/NoCancel" to="." method="_on_no_cancel_pressed"]

@@ -101,7 +101,7 @@ func _on_redraw_pressed() -> void:
 		# if the edited item is on the filtered list, try to select it
 		_kana_list.select_by_real_index(_editing_real_index)
 
-		$Redraw.text = "Redraw"
+		$Redraw.text = "Clear and redraw"
 
 		if _kana_list.is_visible_by_real_index(_editing_real_index):
 			$Redraw.disabled = false

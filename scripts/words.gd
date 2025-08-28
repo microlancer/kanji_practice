@@ -99,10 +99,15 @@ func _on_item_selected(item: FilterableListItem) -> void:
 
 	$WordEdit.text = word_item.word
 	$FuriganaEdit.text = word_item.furigana
+
+	if word_item.furigana == "":
+		$Kanji.disabled = true
+	else:
+		$Kanji.disabled = false
+
 	$Delete.visible = true
 	$Reset.visible = true
 	$Kanji.visible = true
-	$Kanji.disabled = false
 	$Save.text = "Save"
 	$Save.disabled = true
 
@@ -122,12 +127,13 @@ func _on_save_pressed() -> void:
 	var word = $WordEdit.text
 	var furigana = $FuriganaEdit.text
 
-
-	if word == "" or furigana == "":
+	if word == "":
+		button_error($Save, "Word required")
 		return
 
-
-
+	if furigana == "":
+		button_error($Save, "Furigana required in word")
+		return
 
 	if not JapaneseText.has_kanji(word):
 		button_error($Save, "Kanji required in word")
@@ -139,8 +145,8 @@ func _on_save_pressed() -> void:
 			button_error($Save, "Word already exists")
 			return
 
-		var mastery_read = PracticeDB.words[word].mastery_read
-		var mastery_write = PracticeDB.words[word].mastery_write
+		var mastery_read = 0#PracticeDB.words[word].mastery_read
+		var mastery_write = 0#PracticeDB.words[word].mastery_write
 
 		_save_new_word(word, furigana, mastery_read, mastery_write)
 	else:
@@ -271,3 +277,31 @@ func _create_kanji_if_missing(kanji_array: Array) -> void:
 	if added:
 		PracticeDB.mark_valid_items()
 		PracticeDB.db_changed.emit()
+
+
+func _on_delete_pressed() -> void:
+	$AreYouSure.visible = true
+
+
+func _on_yes_delete_pressed() -> void:
+	_delete_existing_word()
+
+
+func _on_no_cancel_pressed() -> void:
+	$AreYouSure.visible = false
+
+func _delete_existing_word() -> void:
+	var word_item: WordItem = _words_list.get_item_by_real_index(_editing_real_index)
+	PracticeDB.words.erase(word_item.word)
+
+	_words_list.remove_item_by_real_index(_editing_real_index)
+
+	PracticeDB.mark_valid_items()
+	PracticeDB.db_changed.emit()
+
+	init_from_db()
+
+	$AreYouSure.visible = false
+	$Delete.visible = false
+	$Kanji.visible = false
+	_editing_real_index = NONE

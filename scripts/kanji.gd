@@ -70,10 +70,12 @@ func _on_item_selected(item: FilterableListItem) -> void:
 		$Example.visible = true
 		$Example.text = kanji_item.text
 		$Example.modulate = Color(255, 255, 255, 0.2)
+		$Redraw.text = "Draw"
 	else:
 		$Example.text = kanji_item.text
 		$Example.visible = true
 		$Example.modulate = Color(255, 255, 255, 1)
+		$Redraw.text = "Clear and redraw"
 
 
 func _on_redraw_pressed() -> void:
@@ -112,7 +114,7 @@ func _on_redraw_pressed() -> void:
 		# if the edited item is on the filtered list, try to select it
 		_kanji_list.select_by_real_index(_editing_real_index)
 
-		$Redraw.text = "Redraw"
+		$Redraw.text = "Clear and redraw"
 
 		if _kanji_list.is_visible_by_real_index(_editing_real_index):
 			$Redraw.disabled = false

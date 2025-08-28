@@ -10,12 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Kanji Practice"
-config/version="1.10.0"
+config/name="Kakikata"
+config/description="An wordbank flashcard app for learning Japanese kanji."
+config/version="1.15.0"
 run/main_scene="uid://dofao4rntufk3"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 run/max_fps=20
-config/icon="res://assets/icons/icon.svg"
+boot_splash/image="uid://d1xujvpj50rvk"
+config/icon="uid://llchdxk7af3a"
 
 [autoload]
 

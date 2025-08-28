@@ -348,3 +348,155 @@ static func compare_strokes2(sig_a: Dictionary, sig_b: Dictionary, use_dtw: bool
 	var max_possible := sqrt(2.0)
 	var dissimilarity :float= clamp(avg_cost / max_possible, 0.0, 1.0)
 	return dissimilarity
+
+# Build a character-level signature from an ordered array of raw strokes
+# raw_strokes: Array of Array<Vector2>  (stroke order = drawing order)
+func build_char_signature(raw_strokes: Array, resample_count:=32, simplify_eps:=0.02) -> Dictionary:
+	var n = raw_strokes.size()
+	if n == 0:
+		return {}
+	# compute full char bbox in raw pixels
+	var min_x = INF; var min_y = INF
+	var max_x = -INF; var max_y = -INF
+	for s in raw_strokes:
+		for p in s:
+			min_x = min(min_x, p.x); min_y = min(min_y, p.y)
+			max_x = max(max_x, p.x); max_y = max(max_y, p.y)
+	var w = max_x - min_x
+	var h = max_y - min_y
+	if w < 1e-6: w = 1.0
+	if h < 1e-6: h = 1.0
+	var char_bbox = Rect2(min_x, min_y, w, h)
+
+	var strokes_sig := []
+	for s in raw_strokes:
+		var stroke_sig = process_stroke(s, resample_count, simplify_eps, true)
+		# compute raw start/mid/end in raw coords
+		var raw_start = s[0]
+		var raw_end = s[s.size() - 1]
+		var raw_len = _path_length(s)
+		# compute mid point by arc-length
+		var mid_idx = int(floor((s.size() - 1) / 2.0))
+		var raw_mid = s[mid_idx]
+
+
+
+		var rel_start = to_rel(raw_start, min_x, min_y, w, h)
+		var rel_mid = to_rel(raw_mid, min_x, min_y, w, h)
+		var rel_end = to_rel(raw_end, min_x, min_y, w, h)
+
+		# relative length (use char height or diag)
+		var length_ratio = raw_len / max(h, sqrt(w*w + h*h))
+
+		stroke_sig["raw_start"] = raw_start
+		stroke_sig["raw_mid"] = raw_mid
+		stroke_sig["raw_end"] = raw_end
+		stroke_sig["rel_start"] = rel_start
+		stroke_sig["rel_mid"] = rel_mid
+		stroke_sig["rel_end"] = rel_end
+		stroke_sig["length_ratio"] = length_ratio
+		# keep reference to raw stroke if you like:
+		stroke_sig["raw_points"] = s.duplicate()
+		strokes_sig.append(stroke_sig)
+
+	# compute some global char-level metrics
+	var char_center = Vector2(min_x + w*0.5, min_y + h*0.5)
+	var char_diag = sqrt(w*w + h*h)
+
+	var char_sig = {
+		"char_bbox": char_bbox,
+		"char_center": char_center,
+		"char_diag": char_diag,
+		"strokes": strokes_sig,
+		"stroke_count": n
+	}
+	return char_sig
+
+# compute normalized-to-char coordinates (0..1)
+func to_rel(p: Vector2, min_x: float, min_y: float, w: float, h: float) -> Vector2:
+	return Vector2((p.x - min_x) / w, (p.y - min_y) / h)
+
+# params: tune weights & tolerances
+# params = {
+#   "shape_weight": 0.75,
+#   "pos_weight": 0.25,
+#   "prev_pos_tol": 0.15,   # fraction of char diag allowed for start->prev_end
+#   "angle_tol_deg": 20.0,  # allowed rotation leniency (per-stroke)
+# }
+func compare_stroke_with_context(ref_char_sig: Dictionary, input_raw_strokes: Array, stroke_index: int, params: Dictionary) -> Dictionary:
+	# returns { "score": 0..1 (lower better), "shape_score":..., "pos_score":..., "passed": bool }
+	var strokes_ref = ref_char_sig["strokes"]
+	if stroke_index < 0 or stroke_index >= strokes_ref.size():
+		return {"score": 1.0, "passed": false}
+
+	# build signature for the user's stroke (we assume input_raw_strokes contains strokes up to current)
+	var input_stroke_raw = input_raw_strokes[stroke_index]
+	var input_sig = process_stroke(input_stroke_raw)
+
+	# shape comparison (lower = more similar). reuse compare_strokes2 which returns 0..1 dissimilarity
+	var shape_dissim = compare_strokes2(strokes_ref[stroke_index], input_sig, true, 0.35)
+	# shape score normalized to 0..1 (we'll use dissimilarity directly)
+	var shape_score = clamp(shape_dissim, 0.0, 1.0)
+
+	# previous-stroke positional check (if this is not the first stroke)
+	var pos_score = 0.0
+	if stroke_index > 0:
+		var prev_ref = strokes_ref[stroke_index - 1]
+		# distance between input stroke start (relative) and ref prev stroke end (relative)
+		# compute input start relative to char bbox:
+		var bbox = ref_char_sig["char_bbox"]
+		var w = bbox.size.x
+		var h = bbox.size.y
+		if w < 1e-6: w = 1.0
+		if h < 1e-6: h = 1.0
+		var inp_start = input_stroke_raw[0]
+		#var rel_inp_start = Vector2((inp_start.x - bbox.position.x)/w, (inp_start.y - bbox.position.y)/h)
+		var ref_prev_end = prev_ref["rel_end"] as Vector2
+		# normalize error by char diag
+		var diag = ref_char_sig["char_diag"]
+		var prev_end_abs = Vector2(bbox.position.x + ref_prev_end.x * w, bbox.position.y + ref_prev_end.y * h)
+		var dist_pixels = inp_start.distance_to(prev_end_abs)
+		var pos_err = dist_pixels / max(1.0, diag)
+		# turn into 0..1 penalty (0 = perfect, 1 = huge error)
+		pos_score = clamp(pos_err / params.get("prev_pos_tol", 0.15), 0.0, 1.0)
+	else:
+		# no previous stroke: zero penalty
+		pos_score = 0.0
+
+	# angle/rotation leniency (optional): penalize if stroke principal angle differs by more than angle_tol_deg
+	var angle_penalty = 0.0
+	if params.has("angle_tol_deg"):
+
+		var ref_ang = main_angle_from_sig(strokes_ref[stroke_index])
+		var in_ang = main_angle_from_sig(input_sig)
+		var diff_deg = abs(rad_to_deg(wrapf(in_ang - ref_ang, -PI, PI)))
+		if diff_deg > params.get("angle_tol_deg", 20.0):
+			angle_penalty = clamp((diff_deg - params.get("angle_tol_deg", 20.0)) / 90.0, 0.0, 1.0)
+
+	# combine scores (lower means better)
+	var shape_w = params.get("shape_weight", 0.75)
+	var pos_w = params.get("pos_weight", 0.25)
+	var angle_w = params.get("angle_weight", 0.0)
+	var combined = shape_score * shape_w + pos_score * pos_w + angle_penalty * angle_w
+	combined = clamp(combined, 0.0, 1.0)
+
+	# pass threshold
+	var pass_threshold = params.get("pass_threshold", 0.6) # here lower is better, so if combined < pass_threshold => pass
+	var passed = combined < pass_threshold
+
+	return {
+		"score": combined,
+		"shape_score": shape_score,
+		"pos_score": pos_score,
+		"angle_penalty": angle_penalty,
+		"passed": passed
+	}
+
+# compute main direction vector for ref stroke and input stroke
+func main_angle_from_sig(sig: Dictionary) -> float:
+	var res = sig.get("resampled", [])
+	if res.size() >= 2:
+		var a = res[0] as Vector2
+		var b = res[res.size()-1] as Vector2
+		return (b - a).angle()
+	return 0.0

@@ -37,6 +37,10 @@ func init_filter() -> void:
 
 	if _fills_list.filter_edit.text != "":
 		_fills_list.select_by_visible_index(0)
+	else:
+		$Save.visible = true
+		$Save.disabled = false
+		$Save.text = "Add fill"
 
 func _on_item_selected(item: FilterableListItem) -> void:
 	var fill: FillItem = item as FillItem
@@ -81,8 +85,13 @@ func _list_get_kanji_words(words: Array) -> Array:
 
 func _on_save_pressed() -> void:
 	var fill_name = $NameEdit.text
-	var words = $ListOfWords.text
-	var words_array = $ListOfWords.text.split(",")
+	var words = $ListOfWords.text.replace("、", ",")
+
+	var words_array: Array = []
+	for w in words.split(","):
+		words_array.append(w.strip_edges())
+
+	#var words_array = words.split(",").map(func(w): return w.strip_edges())
 
 	if words == "":
 		button_error($Save, "Words required")
@@ -134,7 +143,7 @@ func _save_new_fill(fill_name: String, words_array: Array) -> void:
 	var new_fill: FillItem = FillItem.new()
 	new_fill.name = fill_name
 	new_fill.words = words_array
-	new_fill.valid = false
+	new_fill.is_valid = false
 	_fills_list.add_item(new_fill)
 
 	PracticeDB.fills[new_fill.name] = {
@@ -208,3 +217,31 @@ func _on_words_pressed() -> void:
 	PracticeDB.filter_words = "|".join(kanji_words)
 	print(kanji_words)
 	jump_to_words.emit()
+
+
+func _on_delete_pressed() -> void:
+	$AreYouSure.visible = true
+
+
+func _on_no_cancel_pressed() -> void:
+	$AreYouSure.visible = false
+
+
+func _on_yes_delete_pressed() -> void:
+	_delete_existing_fill()
+
+func _delete_existing_fill() -> void:
+	var fill_item: FillItem = _fills_list.get_item_by_real_index(_editing_real_index)
+	PracticeDB.fills.erase(fill_item.name)
+
+	_fills_list.remove_item_by_real_index(_editing_real_index)
+
+	PracticeDB.mark_valid_items()
+	PracticeDB.db_changed.emit()
+
+	init_from_db()
+
+	$AreYouSure.visible = false
+	$Delete.visible = false
+	$Words.visible = false
+	_editing_real_index = NONE

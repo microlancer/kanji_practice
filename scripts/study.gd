@@ -16,6 +16,7 @@ var _char_index: int = 0 # which character we're writing
 #var _char_stroke_index: int = 0 # which stroke of the current character
 var _check_due_timer: Timer
 var _study_started: bool = false
+#var _reset_mastery: bool = false
 
 func _ready() -> void:
 	$DrawPanel.disable()
@@ -34,32 +35,38 @@ func _ready() -> void:
 	$Answer.text = ""
 	$TryAgain.visible = false
 	$ShowAnswer.visible = false
-	$Next.visible = false
-
-	$Version.text = "v" + ProjectSettings.get_setting("application/config/version")
+	$NewQuestion.visible = false
+	$MistakePanel.visible = false
 
 
 
 	_check_due_timer = Timer.new()
-	_check_due_timer.autostart = false
+	_check_due_timer.autostart = true
 	_check_due_timer.one_shot = false
 	_check_due_timer.wait_time = 3
 	_check_due_timer.timeout.connect(_on_check_due_timer)
+	await get_tree().process_frame
 	add_child(_check_due_timer)
 
 func _on_check_due_timer() -> void:
 
+	print("Checking for new study words due")
+
+	if _study_started:
+		return
+
 	var valid_data: Dictionary = PracticeDB.get_valid_data()
 
 	if valid_data.words.is_empty():
-		_set_error("No valid words")
+		#_set_error("No valid words")
 		return
 
 	var total_due: int = PracticeDB.get_due_count(valid_data.words)
 	print("Checking total due: " + str(total_due))
 
 	if total_due <= 0:
-		_check_due_timer.start()
+		#_check_due_timer.start()
+		_study_started = false
 		return
 
 	print("Found due")
@@ -76,26 +83,30 @@ func _set_error(e: String) -> void:
 
 func _start_study() -> void:
 
-	if _study_started:
-		return
+	#if _study_started:
+	#	return
 
-	_study_started = true
 
 	$Answer.text = ""
 	$TryAgain.visible = false
 	$ShowAnswer.visible = false
+	#$ResetMastery.visible = false
+	$MistakePanel.visible = false
 	_expected_strokes = []
 	_expected_word = ""
 	_char_index = 0
 	_made_mistake = false
+	#_reset_mastery = false
 	_is_due = false
-	_check_due_timer.stop()
+	#_check_due_timer.stop()
 
 	var valid_data: Dictionary = PracticeDB.get_valid_data()
 
 	if valid_data.words.is_empty():
 		_set_error("No valid words")
 		return
+
+	_study_started = true
 
 	#var valid_words: Array = []
 
@@ -133,7 +144,8 @@ func _start_study() -> void:
 		$DrawPanel.enabled = false
 		$Panel/JapaneseText.text = ""
 		$Panel/JapaneseText.set_text("")
-		_check_due_timer.start()
+		_study_started = false
+		#_check_due_timer.start()
 		return
 
 	print("Random word: " + random_word)
@@ -243,27 +255,6 @@ func _start_study() -> void:
 	await japanese_text.rendered
 
 
-func x_hide_random_kanji() -> void:
-	print("hide")
-
-	#japanese_text.render_text()
-
-	var kanji_words: Array[Dictionary] = japanese_text.get_kanji_words()
-
-	print({"ww":kanji_words})
-
-	japanese_text.visible = true
-#	var hide_kanji_word_index: int = randi() % kanji_words.size()
-
-#	japanese_text.render_text(hide_kanji_word_index)
-
-	# Extract kanji
-
-	# Randomly select one kanji word for quiz
-
-	# For other kanji, show furigana unless > level 2.
-
-
 func _on_next_pressed() -> void:
 	_study_started = false
 	_start_study()
@@ -273,78 +264,6 @@ func _on_clear_pressed() -> void:
 	_draw_panel.clear()
 	#_strokes_drawn = []
 
-
-
-func _loosely_matches(a: String, b: String) -> bool:
-
-	if a == b:
-		return true
-	elif a == "DR" and b == "R":
-		return true
-	elif a == "DL" and b == "L":
-		return true
-	elif a == "DR" and b == "D":
-		return true
-	elif a == "DL" and b == "D":
-		return true
-	elif a == "R" and b == "DR":
-		return true
-	elif a == "L" and b == "DL":
-		return true
-	elif a == "R" and b == "UR":
-		return true
-	elif a == "U" and b == "UL":
-		return true
-	elif a == "U" and b == "UR":
-		return true
-	elif a == "D" and b == "R":
-		return true
-	elif a == "L" and b == "D":
-		return true
-	elif a == "R" and b == "D":
-		return true
-
-	return false
-
-func xxx_on_draw_panel_stroke_drawn(strokeIndex: int, direction: String) -> void:
-	print({"i":strokeIndex,"d":direction})
-	#print(_expected_strokes)
-	#_strokes_drawn.append(direction)
-
-	var a: String = _expected_strokes[_char_index][strokeIndex]
-	var b: String = direction
-
-	if _loosely_matches(a, b) or _loosely_matches(b, a):
-		# correct
-		if strokeIndex == _expected_strokes[_char_index].size() - 1:
-			# end of character success
-			print("End of character success")
-			_show_answer_progress()
-			_char_index += 1
-			_draw_panel.clear()
-			if _char_index == _expected_strokes.size():
-				print("End of word, move to next quiz")
-				$Sound2.play()
-				_study_started = false
-				_start_study()
-				return
-			else:
-				print("More characters remaining")
-				$Sound1.play()
-		else:
-			print("Not end of character, keep going")
-			# not end of character yet, keep going
-			pass
-	else:
-		# incorrect stroke
-		$Answer.text = "incorrect"
-		_draw_panel.brush_color = Color.RED
-		#_draw_panel._requested_refresh = true
-		_draw_panel.disable()
-		$TryAgain.visible = true
-		$ShowAnswer.visible = true
-
-	#print(_strokes_drawn)
 
 func _show_answer_progress() -> void:
 	$Answer.text = ""
@@ -373,13 +292,14 @@ func _get_strokes_for_char(c: String) -> Array:
 
 
 func _on_try_again_pressed() -> void:
-	$Answer.text = ""
-	_char_index = 0
+	#$Answer.text = ""
+	#_char_index = 0
 	_draw_panel.clear()
 	_draw_panel.brush_color = Color.WHITE
 	_draw_panel.enable()
 	$TryAgain.visible = false
 	$ShowAnswer.visible = false
+	#$ResetMastery.visible = false
 
 
 func _on_show_answer_pressed() -> void:
@@ -421,13 +341,16 @@ func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
 			if _char_index == _expected_strokes.size():
 				print("End of word, move to next quiz")
 				$Sound2.play()
-				if not _made_mistake and _is_due:
+				if _made_mistake:
+					$MistakePanel.visible = true
+					return
+				elif not _made_mistake and _is_due:
 					PracticeDB.increment_mastery_for_word(_mastery_word, _mastery_type)
-				elif not _made_mistake and not _is_due:
-					PracticeDB.postpone_due_for_word(_mastery_word, _mastery_type)
 				else:
-					PracticeDB.reset_mastery_for_word(_mastery_word, _mastery_type)
-					_made_mistake = false
+					# No mastery increase, just repeat current level.
+					PracticeDB.postpone_due_for_word(_mastery_word, _mastery_type)
+				_made_mistake = false
+				#_reset_mastery = false
 				_study_started = false
 				_start_study()
 				return
@@ -440,7 +363,7 @@ func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
 			pass
 	else:
 		# incorrect stroke
-		$Answer.text = "incorrect"
+		#$Answer.text = "incorrect"
 		$Sound3.play()
 		_draw_panel.brush_color = Color.RED
 		#_draw_panel._requested_refresh = true
@@ -448,3 +371,31 @@ func _on_draw_panel_stroke_drawn_raw(strokeIndex: int, points: Array) -> void:
 		_made_mistake = true
 		$TryAgain.visible = true
 		$ShowAnswer.visible = true
+		#$ResetMastery.visible = true
+
+
+func _on_reset_mastery_pressed() -> void:
+	$MistakePanel.visible = false
+	PracticeDB.reset_mastery_for_word(_mastery_word, _mastery_type)
+	_made_mistake = false
+	#_reset_mastery = false
+	_study_started = false
+	_start_study()
+	#_reset_mastery = true
+	#$Answer.text = ""
+	#_char_index = 0
+	#_draw_panel.clear()
+	#_draw_panel.brush_color = Color.WHITE
+	#_draw_panel.enable()
+	#$TryAgain.visible = false
+	#$ShowAnswer.visible = false
+	#$ResetMastery.visible = false
+
+
+func _on_leave_as_scheduled_pressed() -> void:
+	$MistakePanel.visible = false
+	PracticeDB.postpone_due_for_word(_mastery_word, _mastery_type)
+	_made_mistake = false
+	#_reset_mastery = false
+	_study_started = false
+	_start_study()

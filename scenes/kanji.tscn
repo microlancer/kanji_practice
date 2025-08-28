@@ -1,15 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://bsfoc2rtvuehg"]
+[gd_scene load_steps=9 format=3 uid="uid://bsfoc2rtvuehg"]
 
 [ext_resource type="Script" uid="uid://ccadjbvbss4r2" path="res://scripts/kanji.gd" id="1_gnhbr"]
 [ext_resource type="PackedScene" uid="uid://bn4m2tay0i6rj" path="res://scenes/filterable_list.tscn" id="3_fcsfx"]
-[ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/kanji-block2.png" id="4_fl8bf"]
+[ext_resource type="Texture2D" uid="uid://betwmvm2in178" path="res://assets/images/kanji-block2.png" id="4_fl8bf"]
 [ext_resource type="Script" uid="uid://b4jf6wsar8kht" path="res://scripts/my_text_edit.gd" id="4_vh6ca"]
 [ext_resource type="Script" uid="uid://de5btcjhreqd2" path="res://scripts/draw_panel.gd" id="5_fl8bf"]
+[ext_resource type="FontFile" uid="uid://dr0ukqg3jt84y" path="res://assets/fonts/KanjiStrokeOrders_v4.004.ttf" id="6_ghykn"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ghykn"]
 texture = ExtResource("4_fl8bf")
 
 [sub_resource type="LabelSettings" id="LabelSettings_fl8bf"]
+font = ExtResource("6_ghykn")
 font_size = 600
 
 [node name="Kanji" type="Control"]
@@ -63,9 +65,9 @@ metadata/_custom_type_script = "uid://de5btcjhreqd2"
 [node name="Example" type="Label" parent="."]
 layout_mode = 0
 offset_left = 193.0
-offset_top = 1007.0
+offset_top = 1086.0
 offset_right = 893.0
-offset_bottom = 1876.0
+offset_bottom = 1955.0
 text = "漢"
 label_settings = SubResource("LabelSettings_fl8bf")
 horizontal_alignment = 1

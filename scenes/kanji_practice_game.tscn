@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dofao4rntufk3"]
+[gd_scene load_steps=11 format=3 uid="uid://dofao4rntufk3"]
 
 [ext_resource type="Script" uid="uid://b78er31qaq8bi" path="res://scripts/kanji_practice_game.gd" id="1_8cksl"]
 [ext_resource type="PackedScene" uid="uid://bes2f2dlre0pj" path="res://scenes/study.tscn" id="2_6ygm7"]
@@ -7,7 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://dv3fvk7yqpxvj" path="res://scenes/fills.tscn" id="5_vqt6i"]
 [ext_resource type="PackedScene" uid="uid://ci1fx6rq8xnk1" path="res://scenes/words.tscn" id="6_vqt6i"]
 [ext_resource type="PackedScene" uid="uid://cj2pisgqrvjpg" path="res://scenes/kana.tscn" id="7_3q3tu"]
-[ext_resource type="PackedScene" uid="uid://cj48055cmnawe" path="res://options.tscn" id="7_vqt6i"]
+[ext_resource type="PackedScene" uid="uid://cj48055cmnawe" path="res://scenes/options.tscn" id="7_vqt6i"]
+[ext_resource type="Texture2D" uid="uid://c73uds6s4jigy" path="res://assets/icons/logo-transparent.png" id="9_dued6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3q3tu"]
 
@@ -39,6 +40,7 @@ tab_3/title = "Words"
 tab_4/title = "Kanji"
 tab_5/title = "Kana"
 tab_6/title = "Opts"
+tab_6/disabled = true
 
 [node name="Study" parent="TabBar" instance=ExtResource("2_6ygm7")]
 
@@ -94,6 +96,26 @@ offset_top = 192.0
 offset_right = 788.0
 offset_bottom = 270.0
 text = "Use cloud data"
+
+[node name="Version" type="Label" parent="."]
+self_modulate = Color(0.325441, 0.325441, 0.325441, 1)
+z_index = -1
+layout_mode = 0
+offset_left = 112.0
+offset_top = 1824.0
+offset_right = 416.0
+offset_bottom = 1894.0
+text = "Version 1.0.0"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+self_modulate = Color(1, 1, 1, 0.545098)
+layout_mode = 0
+offset_left = 16.0
+offset_top = 1816.0
+offset_right = 104.0
+offset_bottom = 1904.0
+texture = ExtResource("9_dued6")
+expand_mode = 1
 
 [connection signal="tab_changed" from="TabBar" to="." method="_on_tab_bar_tab_changed"]
 [connection signal="pressed" from="CloudPopup/Ignore" to="." method="_on_ignore_pressed"]

@@ -6,6 +6,9 @@ const WORDS_TAB_INDEX = 3
 const KANJI_TAB_INDEX = 4
 
 func _ready() -> void:
+
+	$Version.text = "Kakikata v" + ProjectSettings.get_setting("application/config/version") + " beta"
+
 	$TabBar/Study.jump_to_phrases.connect(_on_jump_to_phrases)
 	$TabBar/Phrases.jump_to_fills.connect(_on_jump_to_fills)
 	$TabBar/Fills.jump_to_words.connect(_on_jump_to_words)

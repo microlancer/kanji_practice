@@ -35,6 +35,9 @@ func _on_db_changed():
 	pass
 
 func save_to_cloud() -> void:
+
+
+
 	var data: Dictionary = {
 		"fills": fills,
 		"kana": kana,
@@ -44,6 +47,10 @@ func save_to_cloud() -> void:
 	}
 	# store into user:// folder
 	save_json(data, "practice_db")
+
+	# disable save to cloud for now
+	if true:
+		return
 
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
@@ -155,7 +162,7 @@ func get_json_string_from_db() -> String:
 func extract_fills(string: String) -> Array:
 	print("Extracting fills from: " + string)
 	var regex := RegEx.new()
-	regex.compile("([0-9a-z\\-]+)")
+	regex.compile("([a-z][0-9a-z\\-]+)")
 
 	var matches := []
 	for result in regex.search_all(string):
@@ -285,6 +292,7 @@ func increment_mastery_for_word(word: String, type: MasteryType) -> void:
 
 		while due_seconds > add_seconds:
 			due_seconds -= add_seconds
+			print("Skipping one mastery level...")
 			words[word].mastery_read += 1
 			add_seconds = _get_add_seconds(words[word].mastery_read)
 
@@ -296,11 +304,12 @@ func increment_mastery_for_word(word: String, type: MasteryType) -> void:
 		words[word].mastery_write += 1
 
 		# check if due_read is more than 1 mastery level away
-		var due_seconds: int = int(Time.get_unix_time_from_system()) - words[word].due_read
+		var due_seconds: int = int(Time.get_unix_time_from_system()) - words[word].due_write
 		var add_seconds: int = _get_add_seconds(words[word].mastery_write)
 
 		while due_seconds > add_seconds:
 			due_seconds -= add_seconds
+			print("Skipping one mastery level...")
 			words[word].mastery_write += 1
 			add_seconds = _get_add_seconds(words[word].mastery_write)
 
@@ -491,8 +500,8 @@ func save_json(data: Dictionary, filename: String) -> void:
 	else:
 		push_error("Could not open file for writing: " + file_path)
 
-func load_json(filename: String) -> Dictionary:
-	var file_path := "user://%s.json" % filename
+func load_json(filename: String, where: String = "user") -> Dictionary:
+	var file_path := where + "://%s.json" % filename
 	if not FileAccess.file_exists(file_path):
 		push_warning("File not found: " + file_path)
 		return {}
@@ -526,9 +535,15 @@ func load_from_file() -> void:
 		mark_valid_items()
 
 		db_loaded.emit()
+	else:
+		# Load only kana
+		data = load_json("kana", "res")
+		kana = data.kana
 
-	print("loading from " + cloud_url)
-	load_from_cloud()
+	# disable loading from cloud for now
+	if false:
+		print("loading from " + cloud_url)
+		load_from_cloud()
 
 func get_db_hash() -> int:
 	var data: Dictionary = {

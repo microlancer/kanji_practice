@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://cj48055cmnawe"]
+
+[ext_resource type="Script" uid="uid://j076lxxvyxlv" path="res://scripts/options.gd" id="1_5v8ap"]
+[ext_resource type="Script" uid="uid://b4jf6wsar8kht" path="res://scripts/my_text_edit.gd" id="2_se8ut"]
+
+[node name="Options" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_5v8ap")
+metadata/_custom_type_script = "uid://bitcditq5adw4"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 192.0
+offset_right = 229.0
+offset_bottom = 262.0
+text = "Save/Load Server:"
+
+[node name="MyTextEdit" type="TextEdit" parent="."]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 264.0
+offset_right = 1016.0
+offset_bottom = 544.0
+text = "https://microlancer.io/kanji/index.php?id=123"
+wrap_mode = 1
+script = ExtResource("2_se8ut")
+metadata/_custom_type_script = "uid://b4jf6wsar8kht"
